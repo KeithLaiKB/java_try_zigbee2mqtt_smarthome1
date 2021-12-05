@@ -1,0 +1,1 @@
+# java_try_zigbee2mqtt_smarthome1
