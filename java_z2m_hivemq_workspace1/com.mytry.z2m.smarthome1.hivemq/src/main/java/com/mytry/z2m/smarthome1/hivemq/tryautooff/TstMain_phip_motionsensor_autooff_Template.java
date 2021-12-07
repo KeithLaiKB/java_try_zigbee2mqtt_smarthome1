@@ -18,7 +18,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
 
-public class TestMain_phip_motionsensor_autooff_Template {
+public class TstMain_phip_motionsensor_autooff_Template {
 
 
 	
