@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.starthome;
+package com.mytry.z2m.smarthome1.hivemq.tryautooff;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
@@ -21,6 +21,8 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Toola3;
 /**
  * 
  * 
@@ -28,25 +30,58 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
  * 							description:																			</br>	
  * &emsp;						use different value to publish message each time 									</br>	
  * 																													</br>
- *
+ * 用线程控制 自动关灯
  *
  * @author laipl
  *
  */
-public class TestMain_phip_montionsensor_tool2 implements Runnable{
+public class Switcher_Sonoff31Lite_Autooff implements Runnable{
 	
 	// -1 nothing, 0 false, 1 true
-	static int myrecorded_occupancy = -1;
+	int myrecorded_occupancy = -1;
 	// -1L 代表 初始值, 是不可计算的状态
-	static long occupance_noone_starttime = -1L;
+	long occupance_noone_starttime = -1L;
+	//
+	SonoffS31LiteEntity sonoffS31LiteEntity1 = null;
+	//
+	// 20s 后无人存在, 则进行关灯
+	long noone_remainTimeLimit = 50*1000L;
 
-	public TestMain_phip_montionsensor_tool2() {
+	public Switcher_Sonoff31Lite_Autooff() {
 
 	}
 
 
 	
 	
+	public void setSonoffS31LiteEntity1(SonoffS31LiteEntity sonoffS31LiteEntity1) {
+		this.sonoffS31LiteEntity1 = sonoffS31LiteEntity1;
+	}
+	public SonoffS31LiteEntity getSonoffS31LiteEntity1() {
+		return sonoffS31LiteEntity1;
+	}
+
+
+
+
+	public void setMyrecorded_occupancy(int myrecorded_occupancy) {
+		this.myrecorded_occupancy = myrecorded_occupancy;
+	}
+	public int getMyrecorded_occupancy() {
+		return myrecorded_occupancy;
+	}
+
+	
+	
+	public void setOccupance_noone_starttime(long occupance_noone_starttime) {
+		this.occupance_noone_starttime = occupance_noone_starttime;
+	}
+
+	public long getOccupance_noone_starttime() {
+		return occupance_noone_starttime;
+	}
+
+
 
 	@Override
 	public void run() {
@@ -72,20 +107,23 @@ public class TestMain_phip_montionsensor_tool2 implements Runnable{
 					
 					long noone_remainTimeTmp = TimeUnit.NANOSECONDS.toMillis(nowTime-occupance_noone_starttime);
 					//超过 20s 则关灯
-					if(noone_remainTimeTmp>5*1000L) {
-	                	TestMain_phip_montionsensor_tool tryStartTmp= new TestMain_phip_montionsensor_tool();
-	            		//开灯
+					if(noone_remainTimeTmp>noone_remainTimeLimit) {
+	                	Switcher_Sonoff31Lite_Toola3 tryStartTmp= new Switcher_Sonoff31Lite_Toola3();
+	            		//关灯
 	                	System.out.println("no one. then turn off light");
-	                	tryStartTmp.myStart("OFF");
+	                	int actResultTmp1 = tryStartTmp.mySwitchTransaction("OFF", this.getSonoffS31LiteEntity1());
 	                	//
-	                	//开完灯以后
-	                	//此时灯已经关闭了, 所以暂时不需要再去 记录 和 计算 occupance_noone_starttime
-	                	occupance_noone_starttime =-1L;
+	                	if(actResultTmp1==1) {
+		                	//关灯以后
+		                	//此时灯已经关闭了, 所以暂时不需要再去 记录 和 计算 occupance_noone_starttime
+		                	occupance_noone_starttime =-1L;
+	                	}
+
 					}
 				}
 			}
 			else if(myrecorded_occupancy == -1) {
-				// nothing
+				// nothing 因为此时有可能是初始值, 或出现问题
 
 			}
 			try {

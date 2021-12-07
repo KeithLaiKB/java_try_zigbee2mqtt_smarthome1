@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.starthome;
+package com.mytry.z2m.smarthome1.hivemq;
 
 import java.net.InetSocketAddress;
 import java.util.Scanner;

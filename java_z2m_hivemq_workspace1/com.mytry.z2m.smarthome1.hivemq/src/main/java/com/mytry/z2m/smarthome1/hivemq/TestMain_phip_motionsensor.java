@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.starthome;
+package com.mytry.z2m.smarthome1.hivemq;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
@@ -15,10 +15,9 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 
-public class TestMain_phip_motionsensor_autooff {
 
+public class TestMain_phip_motionsensor {
 
-	
 	public static void main(String[] args){
 
         //String topic        = "MQTT Examples";
@@ -36,13 +35,7 @@ public class TestMain_phip_motionsensor_autooff {
         
         int reqTimes = 0;
         
-        Runnable rnb_tryAutoOff1 =new TestMain_phip_montionsensor_tool2();
-        Thread trd_tryAutoOff1 =new Thread(rnb_tryAutoOff1);
-        trd_tryAutoOff1.start();
-        //
-        //
-        //
-        //
+        
 
         final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress("135.0.237.84",1883);
         //Mqtt5Client sampleClient = new Mqtt5Client(broker, clientId, persistence);
@@ -165,80 +158,59 @@ public class TestMain_phip_motionsensor_autooff {
     			}
             	
             	Integer illuminance_luxTmp = Integer.valueOf(lkhMapTmp1.get("illuminance_lux").toString());
-            	Boolean occupancyTmp = Boolean.valueOf(lkhMapTmp1.get("occupancy").toString());
-            	
             	
             	System.out.println("received message: " + publish + "////"+ new String(publish.getPayloadAsBytes()));
             	System.out.println("received message content(illuminance_lux): " + illuminance_luxTmp.toString());
         	
             	//------------------------------------------------------------------------------
-            	if(occupancyTmp.equals(true)){
-            		TestMain_phip_montionsensor_tool2.myrecorded_occupancy = 1;
-            				
-            		if(illuminance_luxTmp.compareTo(150)<=0) {
-                		System.out.println("it is too dark, i try to switch on the plug");
-                    	try {
-                    		Thread.sleep(500);
-                		} catch (InterruptedException e) {
-                			// TODO Auto-generated catch block
-                			e.printStackTrace();
-                		}
-                    	TestMain_phip_montionsensor_tool tryStartTmp= new TestMain_phip_montionsensor_tool();
-                		//开灯
-                    	tryStartTmp.myStart("ON");
-                    	//
-                    	
-                    	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
-                    	//所以 一旦低于这个数值, 我们就让他开灯, 然后等十五分钟后再去看看
-                    	try {
-                    		//Thread.sleep(150000);
-                    		//先用15秒调试
-                    		Thread.sleep(500);
-                		} catch (InterruptedException e) {
-                			// TODO Auto-generated catch block
-                			e.printStackTrace();
-                		}
-                	}
-            		/*
-                	else if(illuminance_luxTmp.compareTo(150)>=0) {
-                		System.out.println("it is too dark, i try to switch on the plug");
-                    	try {
-                    		Thread.sleep(1000);
-                		} catch (InterruptedException e) {
-                			// TODO Auto-generated catch block
-                			e.printStackTrace();
-                		}
-                    	TestMain_phip_montionsensor_tool tryStartTmp= new TestMain_phip_montionsensor_tool();
-                    	//开灯
-                    	tryStartTmp.myStart("OFF");
-                    	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
-                    	//所以 一旦低于这个数值, 我们就让他开灯, 然后等十五分钟后再去看看
-                    	try {
-                    		//Thread.sleep(150000);
-                    		//先用15秒调试
-                    		Thread.sleep(500);
-                		} catch (InterruptedException e) {
-                			// TODO Auto-generated catch block
-                			e.printStackTrace();
-                		}
-                	}*/
+            	if(illuminance_luxTmp.compareTo(150)<=0) {
+            		System.out.println("it is too dark, i try to switch on the plug");
+                	try {
+                		Thread.sleep(500);
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
+                	Switcher_Sonoff31lite_Tool tryStartTmp= new Switcher_Sonoff31lite_Tool();
+            		//开灯
+                	tryStartTmp.myStart("");
+                	//
+                	
+                	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
+                	//所以 一旦低于这个数值, 我们就让他开灯, 然后等十五分钟后再去看看
+                	try {
+                		//Thread.sleep(150000);
+                		//先用15秒调试
+                		Thread.sleep(15000);
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
             	}
-            	else if(occupancyTmp.equals(false)){
-            		System.out.println("occupancy is false now");
-            		TestMain_phip_montionsensor_tool2.myrecorded_occupancy = 0;
-            		/*
-                    long startObserveTime=System.nanoTime();   			//获取开始时间  
-            		//
-            		//
-            		boolean judge_timeout = false;
-            		while (judge_timeout==false) {
-            			long nowTime_tmp=System.nanoTime();
-            			long timelimit_tmp=20*1000000000L;
-            			if(nowTime_tmp-startObserveTime>timelimit_tmp) {
-            				judge_timeout=true;
-            			}
-            		}*/
+            	else if(illuminance_luxTmp.compareTo(150)>=0) {
+            		System.out.println("it is too dark, i try to switch on the plug");
+                	try {
+                		Thread.sleep(1000);
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
+                	Switcher_Sonoff31lite_Tool tryStartTmp= new Switcher_Sonoff31lite_Tool();
+                	//开灯
+                	tryStartTmp.myStart("OFF");
+                	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
+                	//所以 一旦低于这个数值, 我们就让他开灯, 然后等十五分钟后再去看看
+                	try {
+                		//Thread.sleep(150000);
+                		//先用15秒调试
+                		Thread.sleep(15000);
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
             	}
+        	
+        	
         	}		
         ); 	// set callback
         c1.send();		//subscribe callback and something 

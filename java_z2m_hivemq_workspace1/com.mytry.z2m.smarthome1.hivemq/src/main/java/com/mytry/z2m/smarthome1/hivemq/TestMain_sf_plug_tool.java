@@ -1,11 +1,9 @@
-package com.mytry.z2m.smarthome1.hivemq.starthome;
+package com.mytry.z2m.smarthome1.hivemq;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,17 +31,10 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
  * @author laipl
  *
  */
-public class TestMain_phip_montionsensor_tool {
-
-	private static int myId=0;
-
-	public TestMain_phip_montionsensor_tool() {
-		this.myId= this.myId +1;
-	}
-
+public class TestMain_sf_plug_tool {
 
 	
-	public int myStart(String mySwitchStatus)  {
+	public void myStart()  {
 
         //String topic        = "MQTT Examples";
         String topic        = "zigbee2mqtt/0x00124b00250c256f/set";
@@ -85,7 +76,7 @@ public class TestMain_phip_montionsensor_tool {
         // }
         // 所以初步认为 MqttAsyncClient 是包含了 MqttRxClient 
         Mqtt5AsyncClient client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).identifier(clientId).buildAsync();
-        //Mqtt5AsyncClient client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).identifier(clientId).automaticReconnectWithDefaultConfig().buildAsync();
+        //Mqtt5AsyncClient client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).buildAsync();
         
         
         
@@ -95,65 +86,20 @@ public class TestMain_phip_montionsensor_tool {
         // 不然刚connect 就去publish 会出现第一条无法publish, 然后成功publish第二条的现象
         // 有点像 MqttAsyncClient sampleClient.connect(connOpts, null, null).waitForCompletion(-1); 需要block自己然后直到连接成功才进行下一步
         // 只是我选择 用段时间等待而已
-        System.out.println("try connect");
-        //注意这里的
-        // 有点像 MqttAsyncClient sampleClient.connect(connOpts, null, null).waitForCompletion(-1); 
-        // 在pahoMqtt 这里 waitForCompletion(-1)的-1, 是指一直不停地等待
-        // 但是这里填写-1 是不等待，这里是等于0
-        CompletableFuture<Mqtt5ConnAck> cplfu_connect_rslt = client1.connect().orTimeout(1000, TimeUnit.MILLISECONDS);
-        //CompletableFuture<Mqtt5ConnAck> cplfu_connect_rslt = client1.connect();
-        System.out.println("try connecting");
-        while (cplfu_connect_rslt.isDone()==false) {
-        	System.out.println(this.myId + "   waitttt too much");
-        	try {
-        		Thread.sleep(500);
-    		} catch (InterruptedException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-        }
+        CompletableFuture<Mqtt5ConnAck> cplfu_connect_rslt = client1.connect();
         //wait
-        int times = 0;
-        // 通过我的发现, 同一个client多次使用时, 即使每一次disconnect, 
-        // 都有可能出现 下一次  connect 无法完成, 这种情况 只是connect 这个操作没有完成而已
-        // 但是 可能因为是broker缓存的原因, 虽然没有完成connect动作, 但是它可以不connect, 直接发消息
-        // 所以避免这样的问题, 我在上面就设置了automaticReconnectWithDefaultConfig
-        
-        //
-        // 注意 automaticReconnectWithDefaultConfig 就算给你后面连接成功了, 这个 cplfu_connect_rslt.isDone() 还是有可能是false
-        // 因为 cplfu_connect_rslt.isDone() 只判断这个动作, 并没判断 publisher那边是否  已经保留好他们的状态了 
-    	/*
-        while (cplfu_connect_rslt.isDone() == false) {
+    	while (cplfu_connect_rslt.isDone() == false) {
     		// 这里的 sleep 可以不用, 不影响主逻辑
     		// 只不过 这里加了个 sleep, 可以减少 不停地loop, 因为太多loop会给计算机带来的资源消耗
     		
         	try {
-        		Thread.sleep(500);
+        		Thread.sleep(1000);
     		} catch (InterruptedException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-        	
-        	
-    		System.out.println(this.myId + "   waitttt too much");
-
-        	
-        	// 如果 超过一定时间 还没connect
-        	times = times + 500 ;
-        	if(times > 1500) {
-        		System.out.println(this.myId + "   waitttt too much");
-        		System.out.println(cplfu_connect_rslt.toString());
-        		cplfu_connect_rslt.orTimeout(1, TimeUnit.MICROSECONDS);
-        		//System.out.println(this.myId + "   timeout");
-        		// 不能用exit(0), 他会把整个程序都关掉的
-        		//System.exit(0);
-        		//
-        		//return -1;
-        	}
-        	
-        	
-    	}*/
-    	System.out.println("mypublisher:" + this.myId + ",connected");
+    	}
+		System.out.println("connected");
 		
 		/*
         // 这样还是不会显示第一条, 因为 它只是把 connect和thenaccept 看成一个总流程,
@@ -171,15 +117,10 @@ public class TestMain_phip_montionsensor_tool {
 		
 		//------------------------------- client publish --------------------------------------
 		// ref:https://www.zigbee2mqtt.io/devices/BASICZBR3.html
-        for(int i=0;i<=0;i++) {
+        for(int i=0;i<=1;i++) {
         	LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
         	//lhmap1.put("linkquality", 132);
-        	if(mySwitchStatus.contentEquals("ON")==true) {
-        		lhmap1.put("state", "ON");
-        	}
-        	else if(mySwitchStatus.contentEquals("OFF")==true) {
-        		lhmap1.put("state", "OFF");
-        	}
+        	lhmap1.put("state", "OFF");
         	//lhmap1.put("state", "ON");
         	//String str_content_tmp = "{\"linkquality\":,\"state\":\"OFF\"}";
         	//
@@ -280,25 +221,18 @@ public class TestMain_phip_montionsensor_tool {
         		});
         	*/
 			
-        	
-    		/*
+    		
         	try {
-        		Thread.sleep(15000);
+        		Thread.sleep(500000);
     		} catch (InterruptedException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
-    		}*/
+    		}
         }
         
+
         client1.disconnect();
-        try {
-    		Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        System.out.println("mypublisher:" + this.myId + ",disconnected");
-        return 0;
+        
 
     }
 
