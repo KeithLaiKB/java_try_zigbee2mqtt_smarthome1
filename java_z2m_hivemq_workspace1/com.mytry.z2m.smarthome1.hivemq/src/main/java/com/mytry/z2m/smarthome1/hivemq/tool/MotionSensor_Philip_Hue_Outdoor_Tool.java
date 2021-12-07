@@ -40,13 +40,13 @@ import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
  * @author laipl
  *
  */
-public class MotionSensor_Philip_Hue_Outdoor_Toola3 {
+public class MotionSensor_Philip_Hue_Outdoor_Tool {
 
 	private static int myId=0;
 
 	String brokerIpAddress1 = "135.0.237.84";
 	
-	public MotionSensor_Philip_Hue_Outdoor_Toola3() {
+	public MotionSensor_Philip_Hue_Outdoor_Tool() {
 		this.myId= this.myId +1;
 	}
 

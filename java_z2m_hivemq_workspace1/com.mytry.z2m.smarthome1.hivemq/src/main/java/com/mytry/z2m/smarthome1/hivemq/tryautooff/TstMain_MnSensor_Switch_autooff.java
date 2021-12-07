@@ -17,8 +17,8 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBu
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philip_Hue_Outdoor_Toola3;
-import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Toola3;
+import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philip_Hue_Outdoor_Tool;
+import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
 
 public class TstMain_MnSensor_Switch_autooff {
 
@@ -144,8 +144,8 @@ public class TstMain_MnSensor_Switch_autooff {
             			e.printStackTrace();
             		}*/
         			
-        			Switcher_Sonoff31Lite_Toola3 			switcher_Sonoff31LiteToolTmp		= new Switcher_Sonoff31Lite_Toola3();
-        			MotionSensor_Philip_Hue_Outdoor_Toola3 	motionsensor_PhilipHueOutdoorToolTmp= new MotionSensor_Philip_Hue_Outdoor_Toola3();
+        			Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp		= new Switcher_Sonoff31Lite_Tool();
+        			MotionSensor_Philip_Hue_Outdoor_Tool 	motionsensor_PhilipHueOutdoorToolTmp= new MotionSensor_Philip_Hue_Outdoor_Tool();
         			// 注意一下!!!!!!!
             		//
             		//

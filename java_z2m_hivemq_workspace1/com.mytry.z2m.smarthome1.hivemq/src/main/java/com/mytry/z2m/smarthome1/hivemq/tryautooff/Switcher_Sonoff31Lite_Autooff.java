@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Toola3;
+import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
 /**
  * 
  * 
@@ -108,7 +108,7 @@ public class Switcher_Sonoff31Lite_Autooff implements Runnable{
 					long noone_remainTimeTmp = TimeUnit.NANOSECONDS.toMillis(nowTime-occupance_noone_starttime);
 					//超过 20s 则关灯
 					if(noone_remainTimeTmp>noone_remainTimeLimit) {
-	                	Switcher_Sonoff31Lite_Toola3 tryStartTmp= new Switcher_Sonoff31Lite_Toola3();
+	                	Switcher_Sonoff31Lite_Tool tryStartTmp= new Switcher_Sonoff31Lite_Tool();
 	            		//关灯
 	                	System.out.println("no one. then turn off light");
 	                	int actResultTmp1 = tryStartTmp.mySwitchTransaction("OFF", this.getSonoffS31LiteEntity1());

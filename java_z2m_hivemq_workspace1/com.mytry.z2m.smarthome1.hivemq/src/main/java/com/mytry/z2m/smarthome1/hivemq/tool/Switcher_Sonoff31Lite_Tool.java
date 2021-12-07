@@ -40,13 +40,13 @@ import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
  * @author laipl
  *
  */
-public class Switcher_Sonoff31Lite_Toola3 {
+public class Switcher_Sonoff31Lite_Tool {
 
 	private static int myId=0;
 
 	String brokerIpAddress1 = "135.0.237.84";
 	
-	public Switcher_Sonoff31Lite_Toola3() {
+	public Switcher_Sonoff31Lite_Tool() {
 		this.myId= this.myId +1;
 	}
 
