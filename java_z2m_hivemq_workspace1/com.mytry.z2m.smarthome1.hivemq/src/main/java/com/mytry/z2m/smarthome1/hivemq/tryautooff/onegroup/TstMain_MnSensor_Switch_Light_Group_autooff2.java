@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.tryautooff;
+package com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
@@ -15,12 +15,37 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Call.Ex;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philip_Hue_Outdoor_Tool;
+import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
+import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
+import com.mytry.z2m.smarthome1.hivemq.tryautooff.simplescen.Switcher_Sonoff31Lite_Autooff;
+import com.mytry.z2m.smarthome1.hivemq.tryautooff.simplescen.withhuego2.Light_PhilipsHueGo2_Autooff;
 
-public class TstMain_MnSensor_Switch_autooff {
+/**
+ * 
+ * 方便快捷控制灯相应的顺序
+ * 因为比如 之前 谁先写publish 谁就先进行关灯操作
+ * 
+ * 																												</br>
+ * 用一个进程
+ *  philips hue outdoor motion sensor 的状态 
+ * 		来	同时判断 进行
+ * 		philips hue go 2 开灯关灯
+ * 		sonoff Lite31 switcher 来进行开关
+ * 
+ * 我这样有助于 防止 philips hue go 2 或者  sonoff Lite31 switcher 两个都  没成功, 
+ * 		有可能导致这两个线程 都  去获取 philips hue outdoor motion sensor 的状态 
+ * 			从而导致 此时 会同时获得两次  philips hue outdoor motion sensor 的状态, 
+ * 				所以这是没有必要的, 所以用一个线程就足够了 
+ * 
+ * 
+ * @author laipl
+ *
+ */
+public class TstMain_MnSensor_Switch_Light_Group_autooff2 {
 
 
 	
@@ -29,9 +54,16 @@ public class TstMain_MnSensor_Switch_autooff {
 
         String topicSensorSub1        	= "zigbee2mqtt/0x001788010644d258";
         String broker       			= "tcp://localhost:1883";
+        
+        String brokerIpAddress1       	= "192.168.50.179";
+        
         String sensorClientId1     = "JavaSample_revcevierTesta";
-
+        
+        // philips hue outdoor motion sensor
         String topicSwitchSub1        = "zigbee2mqtt/0x00124b00250c256f";
+        
+        // phips hue go 2
+        String topicLightSub1        = "zigbee2mqtt/0x0017880109e5d363";
 
         String switchClientId1     	= "JavaSample_revcevierTesta";
         
@@ -41,13 +73,14 @@ public class TstMain_MnSensor_Switch_autooff {
         //
         //
         
-        Runnable rnb_tryAutoOff1 =new Switcher_Sonoff31Lite_Autooff();
+        Runnable rnb_tryAutoOff1 =new Sonoff31Lite_PhilipsHueGo2_Group1_Autooff();
         Thread trd_tryAutoOff1 =new Thread(rnb_tryAutoOff1);
         trd_tryAutoOff1.start();
+        
         //
         //
 
-        final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress("135.0.237.84",1883);
+        final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress1,1883);
         //Mqtt5Client sampleClient = new Mqtt5Client(broker, clientId, persistence);
         //Mqtt5AsyncClient client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).identifier(clientId).buildAsync();
         
@@ -116,13 +149,25 @@ public class TstMain_MnSensor_Switch_autooff {
         // 点击最后一个 上面的Complete 就可以展开了
         com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Complete c1 = subscribeBuilder1.addSubscription().topicFilter(topicSensorSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
         c1.addSubscription().topicFilter(topicSwitchSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
+        c1.addSubscription().topicFilter(topicLightSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
         
+        //
+        //
+        //
+        //
         PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
+        //
         SonoffS31LiteEntity sonoffS31LiteEntity1 = new SonoffS31LiteEntity();
+        PhilipsHueGo2Entity philipsHueGo2Entity1 = new PhilipsHueGo2Entity();
         //
         // 把这个放到 那个线程 当中, 这样 这里变, Switcher_AutoOff3里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
-        ((Switcher_Sonoff31Lite_Autooff)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
-        
+        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
+        //
+        // 把这个放到 那个线程 当中, 这样 这里变, 里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
+        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setPhilipsHueGo2Entity1(philipsHueGo2Entity1);
+        //
+        //
+        //
         //PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = null;
         //SonoffS31LiteEntity sonoffS31LiteEntity1 = null;
         
@@ -144,8 +189,9 @@ public class TstMain_MnSensor_Switch_autooff {
             			e.printStackTrace();
             		}*/
         			
-        			Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp		= new Switcher_Sonoff31Lite_Tool();
-        			MotionSensor_Philip_Hue_Outdoor_Tool 	motionsensor_PhilipHueOutdoorToolTmp= new MotionSensor_Philip_Hue_Outdoor_Tool();
+        			Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp			= new Switcher_Sonoff31Lite_Tool();
+        			Light_Philips_Hue_GO2_Tool			light_Philips_Hue_GO2_ToolTmp			= new Light_Philips_Hue_GO2_Tool();
+        			MotionSensor_Philips_Hue_Outdoor_Tool 	motionsensor_PhilipHueOutdoorToolTmp= new MotionSensor_Philips_Hue_Outdoor_Tool();
         			// 注意一下!!!!!!!
             		//
             		//
@@ -190,7 +236,8 @@ public class TstMain_MnSensor_Switch_autooff {
             	
                 	//------------------------------------------------------------------------------
                 	if(plipMotionSensorEntity1.getOccupancy().equals(true)){
-                		((Switcher_Sonoff31Lite_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(1);
+                		// 告诉负责 Sonoff31Lite  和 philips hue go 2的autooff类, 此时 是有人的, 不用开始计算 无人在房间内的时间
+                		((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(1);
                 				
                 		if(illuminance_luxTmp.compareTo(150)<=0) {
                     		System.out.println("it is too dark, i try to switch on the plug");
@@ -203,9 +250,16 @@ public class TstMain_MnSensor_Switch_autooff {
                     		//开灯, 传当前 的 开关 状态过去, 因为事务需要判断 要转变成的状态 和 当前状态, 来进行调整
                         	// 例如 现在很暗, 但是已经开了 就不开灯了
                         	int switchTrancResultTemp = switcher_Sonoff31LiteToolTmp.mySwitchTransaction("ON", sonoffS31LiteEntity1);
-                        	if(switchTrancResultTemp == 0) {
+                        	int light_switchTrancResultTemp1 = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("ON", philipsHueGo2Entity1);
+                        	//
+                        	// 如果其中有一个或以上 没成功, 则进行重新再申请一次 感应器的状态,
+                        	// 因为 可能 没成功的 是因为 最开始运行时, 那些状态 还是null, 而我们一开始收到的信息可能就是 Motion sensor
+                        	// 此时第一次 占用了callback的执行, 所以其他subscription 是暂时无法处理 callback的
+                        	if(switchTrancResultTemp == 0 || light_switchTrancResultTemp1 == 0) {
                         		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
-                        	}
+                        	}                   	
+                        	
+                        	
                         	//
                         	
                         	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
@@ -227,8 +281,7 @@ public class TstMain_MnSensor_Switch_autooff {
                 		//
                 		// Switcher_AutoOff3  这个线程  他自己会根据我们改的值定期检查, 然后进行操作
                 		// 例如 20s 没人就关灯
-                		((Switcher_Sonoff31Lite_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(0);
-
+                		((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(0);
                 	}
         			
         		}
@@ -240,7 +293,14 @@ public class TstMain_MnSensor_Switch_autooff {
         			sonoffS31LiteEntity1.setAttributeFromJson(jsonRsTmp);
         			System.out.println("swiiiiientity:"+sonoffS31LiteEntity1.toString());
         		}
-        		
+        		// 如果当前 获得的信息是 开关信息
+        		else if(publish.getTopic().toString().equals(topicLightSub1)==true) {
+        			//
+        			// 记录当前信息
+        			System.out.println("lightttt:"+publish.toString());
+        			philipsHueGo2Entity1.setAttributeFromJson(jsonRsTmp);
+        			System.out.println("lighttttentity:"+philipsHueGo2Entity1.toString());
+        		}
         		
         		
         	}

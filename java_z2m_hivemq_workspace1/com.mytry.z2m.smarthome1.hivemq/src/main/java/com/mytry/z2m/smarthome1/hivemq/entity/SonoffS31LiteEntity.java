@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SonoffS31LiteEntity {
+public class SonoffS31LiteEntity extends AbstractSmartDeivce {
 	private String 	state = null;
 	private Integer linkquality = null;
 	

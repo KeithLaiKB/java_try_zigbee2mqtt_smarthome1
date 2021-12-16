@@ -40,13 +40,15 @@ import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
  * @author laipl
  *
  */
-public class MotionSensor_Philip_Hue_Outdoor_Tool {
+public class MotionSensor_Philips_Hue_Outdoor_Tool {
 
 	private static int myId=0;
 
-	String brokerIpAddress1 = "135.0.237.84";
+    
+    //String brokerIpAddress1       			= "127.0.0.1";
+	String brokerIpAddress1       			= "192.168.50.179";
 	
-	public MotionSensor_Philip_Hue_Outdoor_Tool() {
+	public MotionSensor_Philips_Hue_Outdoor_Tool() {
 		this.myId= this.myId +1;
 	}
 
@@ -101,7 +103,7 @@ public class MotionSensor_Philip_Hue_Outdoor_Tool {
                 .serverHost("broker.hivemq.com")
                 .buildBlocking();
         */
-        final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress("135.0.237.84",1883);
+        final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress1,1883);
         //
         //
         Mqtt5AsyncClient client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).identifier(clientId).buildAsync();

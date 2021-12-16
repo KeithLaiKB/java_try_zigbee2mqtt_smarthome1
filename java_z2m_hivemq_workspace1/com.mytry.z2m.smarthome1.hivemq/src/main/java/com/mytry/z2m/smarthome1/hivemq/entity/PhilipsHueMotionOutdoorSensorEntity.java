@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class PhilipsHueMotionOutdoorSensorEntity {
+public class PhilipsHueMotionOutdoorSensorEntity extends AbstractSmartDeivce {
 	private String 	motion_sensitivity = null;
 	private Boolean occupancy = null;
 

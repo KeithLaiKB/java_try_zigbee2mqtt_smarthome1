@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.tryautooff;
+package com.mytry.z2m.smarthome1.hivemq.tryautooff.simplescen;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
@@ -30,7 +30,9 @@ import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
  * 							description:																			</br>	
  * &emsp;						use different value to publish message each time 									</br>	
  * 																													</br>
- * 用线程控制 自动关灯
+ * 用线程控制 自动关灯																													</br>
+ * 利用 philips hue outdoor motion sensor 的状态 来控制
+ * 		sonoff Lite31 switcher 来进行开关 
  *
  * @author laipl
  *
@@ -45,7 +47,8 @@ public class Switcher_Sonoff31Lite_Autooff implements Runnable{
 	SonoffS31LiteEntity sonoffS31LiteEntity1 = null;
 	//
 	// 20s 后无人存在, 则进行关灯
-	long noone_remainTimeLimit = 50*1000L;
+	long noone_remainTimeLimit = 20*1000L;
+	//long noone_remainTimeLimit = 5*60*1000L;
 
 	public Switcher_Sonoff31Lite_Autooff() {
 
@@ -89,9 +92,9 @@ public class Switcher_Sonoff31Lite_Autooff implements Runnable{
 		//
 		while (true) {
 			//System.out.println("auttttoo running");
-			// 
+			// 有人在运动
 			if(myrecorded_occupancy == 1) {
-				// -1L 代表 此时 无人状态时间 不开始记录
+				// -1L 代表 此时  不开始记录  无人状态时间
 				occupance_noone_starttime = -1L;
 			}
 			else if(myrecorded_occupancy == 0) {

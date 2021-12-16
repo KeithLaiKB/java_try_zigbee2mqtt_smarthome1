@@ -1,43 +1,43 @@
-package com.mytry.z2m.smarthome1.hivemq;
+package com.mytry.z2m.smarthome1.hivemq.testDevice;
 
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hivemq.client.internal.mqtt.MqttRxClient;
-import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
-
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+
 /**
  * 
+ * 这里 0x00124b00250c256f 后跟个/get 用publish, 只是为了 通知broker 让其他的subscriber都收到当前信息
  * 
- * <p>
- * 							description:																			</br>	
- * &emsp;						use different value to publish message each time 									</br>	
- * 																													</br>
- *
- *
  * @author laipl
  *
  */
-public class TestMain_sf_plug_tool {
+public class TestMain_modified_sub_get {
 
-	
-	public void myStart()  {
+	public static void main(String[] args) {
 
         //String topic        = "MQTT Examples";
-        String topic        = "zigbee2mqtt/0x00124b00250c256f/set";
+        
+        // Sonoff  switcher
+		//String topic        = "zigbee2mqtt/0x00124b00250c256f/get";
+		// philips outdoor motion sensor
+		//String topic        = "zigbee2mqtt/0x001788010644d258/get";
+		// philips hue go 2
+		String topic        = "zigbee2mqtt/0x0017880109e5d363/get";
+        
+        
         //String content      = "Message from MqttPublishSample";
         String content      = "你好";
         //String content      = "hi_myfriend";
@@ -120,8 +120,16 @@ public class TestMain_sf_plug_tool {
         for(int i=0;i<=1;i++) {
         	LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
         	//lhmap1.put("linkquality", 132);
-        	lhmap1.put("state", "OFF");
+        	//lhmap1.put("state", "");
         	//lhmap1.put("state", "ON");
+        	//
+        	// philips outdoor motion sesor
+        	//lhmap1.put("motion_sensitivity", "");
+        	//
+        	// philips hue go 2
+        	lhmap1.put("state", "");
+        	
+        	
         	//String str_content_tmp = "{\"linkquality\":,\"state\":\"OFF\"}";
         	//
         	//
@@ -203,11 +211,30 @@ public class TestMain_sf_plug_tool {
         	
 
         	// send(): the result when the built Mqtt5Publish is sent by the parent
-        	c1.send();
+        	CompletableFuture<Mqtt5PublishResult> completableFuture1 = c1.send();
         	System.out.println(str_content_tmp);
         	
         	
-        	
+        	// 等待 发送 publish
+            long waitTimesTmp = 0L;
+            long waitLimitTimesTmp = 10000L;
+            while (completableFuture1.isDone() == false) {
+            	try {
+    				Thread.sleep(500);
+    			} catch (InterruptedException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+            	waitTimesTmp = waitTimesTmp + 500L;
+            	if (waitTimesTmp> waitLimitTimesTmp) {
+            		System.err.println(":publish time out");
+            		System.err.println(topic+"/"+str_content_tmp);
+            		return ;
+            		//throw new Exception(this.getClass().getName()+ "getStatus time out");
+            		
+            	}
+            }
+        	System.out.println("kkkk");
         	/*
         	//B2方法中 
         	// c1.send(); 
@@ -235,5 +262,4 @@ public class TestMain_sf_plug_tool {
         
 
     }
-
 }

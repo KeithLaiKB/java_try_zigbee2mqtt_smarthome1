@@ -27,6 +27,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
 /**
  * 
@@ -40,13 +41,13 @@ import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
  * @author laipl
  *
  */
-public class Switcher_Sonoff31Lite_Tool {
+public class Light_Philips_Hue_GO2_Tool {
 
 	private static int myId=0;
 
 	String brokerIpAddress1 = "192.168.50.179";
 	
-	public Switcher_Sonoff31Lite_Tool() {
+	public Light_Philips_Hue_GO2_Tool() {
 		this.myId= this.myId +1;
 	}
 
@@ -58,7 +59,7 @@ public class Switcher_Sonoff31Lite_Tool {
 	 */
 	public int mySwitch(String mySwitchState)  {
 	    //String topic        = "MQTT Examples";
-	    String topic        = "zigbee2mqtt/0x00124b00250c256f/set";
+	    String topic        = "zigbee2mqtt/0x0017880109e5d363/set";
 	    return this.publish(topic, mySwitchState);
     }
 	
@@ -68,12 +69,12 @@ public class Switcher_Sonoff31Lite_Tool {
 	 * @param mySwitchToState: "ON","OFF"    要转换成为的状态
 	 * @return -1 代表 有问题, 0 代表 任务完成失败, 因为 网络慢等其他小问题 需要重新再发送请求  	1代表成功
 	 */
-	public int mySwitchTransaction(String mySwitchToState, SonoffS31LiteEntity sonoffS31LiteEntity1)  {
+	public int mySwitchTransaction(String mySwitchToState, PhilipsHueGo2Entity philipsHueGo2Entity1)  {
 	    //String topic        = "MQTT Examples";
 		//
 		//
 		//
-	    if(sonoffS31LiteEntity1 == null) {
+	    if(philipsHueGo2Entity1 == null) {
 	    	System.err.println("entity is null");
 	    	return -1;
 	    }
@@ -88,7 +89,7 @@ public class Switcher_Sonoff31Lite_Tool {
     	//
 
     	// 然后取出 当前 main中的subscriber的状态
-    	String switchStateTmp = sonoffS31LiteEntity1.getState();
+    	String switchStateTmp = philipsHueGo2Entity1.getState();
     	//
     	//---------------------------------------------------------------
     	//
@@ -101,7 +102,7 @@ public class Switcher_Sonoff31Lite_Tool {
     	// 所以switcher 状态是没有办法改变的
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
-    		System.out.println("mySwitchTransaction"+"switcher null state, try to get switcher status");
+    		System.out.println("mySwitchTransaction"+"hue go 2 light null state, try to get hue go 2 light status");
         	this.sendGetToNotifySubscriberToGetStatus();            	
         	//
         	publishResultTemp = 0;
@@ -110,13 +111,13 @@ public class Switcher_Sonoff31Lite_Tool {
     	else if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
     		// 如果 当前状态 和 想要改变成的状态 一直, 则无需改变
     		if(switchStateTmp.equals(mySwitchToState)==true) {
-    			System.err.println("mySwitchTransaction"+"switcher same state");
+    			System.err.println("mySwitchTransaction"+"hue go 2 light same state");
     			// do nothing
     			publishResultTemp = 1;
     		}
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
-    			System.err.println("mySwitchTransaction"+"switcher different state, changing");
+    			System.err.println("mySwitchTransaction"+"hue go 2 light different state, changing");
     			publishResultTemp = this.mySwitch(mySwitchToState);
     			publishResultTemp = 1;
     		}
@@ -270,7 +271,7 @@ public class Switcher_Sonoff31Lite_Tool {
 	 * @return
 	 */
 	public int sendGetToNotifySubscriberToGetStatus() {
-		this.publish("zigbee2mqtt/0x00124b00250c256f"+"/get", "");
+		this.publish("zigbee2mqtt/0x0017880109e5d363"+"/get", "");
 		return 1;
 	}
 	
