@@ -27,6 +27,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
 /**
  * 
@@ -58,11 +59,12 @@ public class MotionSensor_Philips_Hue_Outdoor_Tool {
 	 * @param mySwitchState: "ON","OFF"
 	 * @return
 	 */
+	/*
 	public int mySwitch(String mySwitchState)  {
 	    //String topic        = "MQTT Examples";
 	    String topic        = "zigbee2mqtt/0x001788010644d258/set";
 	    return this.publish(topic, mySwitchState);
-    }
+    }*/
 	
 	
 	/**
@@ -70,10 +72,11 @@ public class MotionSensor_Philips_Hue_Outdoor_Tool {
 	 * @param mySwitchToState: "ON","OFF"    要转换成为的状态
 	 * @return
 	 */
+	/*
 	public int mySwitchTransaction(String mySwitchToState, SonoffS31LiteEntity sonoffS31LiteEntity1)  {
 	    
     	return -1;
-    }
+    }*/
 
 	/**
 	 * ref: https://www.zigbee2mqtt.io/devices/9290019758.html
@@ -200,8 +203,19 @@ public class MotionSensor_Philips_Hue_Outdoor_Tool {
 	 * 
 	 * @return
 	 */
+	/*
 	public int sendGetToNotifySubscriberToGetStatus() {
 		this.publish("zigbee2mqtt/0x001788010644d258"+"/get", "motion_sensitivity");
+		return 1;
+	}*/
+	
+	/**
+	 * "zigbee2mqtt/0x001788010644d258"+"/get"
+	 * @param philipsHueMotionOutdoorSensorEntity1
+	 * @return
+	 */
+	public int sendGetToNotifySubscriberToGetStatus(PhilipsHueMotionOutdoorSensorEntity philipsHueMotionOutdoorSensorEntity1) {
+		this.publish(philipsHueMotionOutdoorSensorEntity1.getTopicUrl_get(), "motion_sensitivity");
 		return 1;
 	}
 	

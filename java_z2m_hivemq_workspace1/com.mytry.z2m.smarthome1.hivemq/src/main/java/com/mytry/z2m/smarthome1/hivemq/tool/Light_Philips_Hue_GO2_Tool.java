@@ -103,7 +103,8 @@ public class Light_Philips_Hue_GO2_Tool {
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
     		System.out.println("mySwitchTransaction"+"hue go 2 light null state, try to get hue go 2 light status");
-        	this.sendGetToNotifySubscriberToGetStatus();            	
+        	//this.sendGetToNotifySubscriberToGetStatus();  
+    		this.sendGetToNotifySubscriberToGetStatus(philipsHueGo2Entity1);  
         	//
         	publishResultTemp = 0;
     	}
@@ -118,7 +119,9 @@ public class Light_Philips_Hue_GO2_Tool {
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
     			System.err.println("mySwitchTransaction"+"hue go 2 light different state, changing");
-    			publishResultTemp = this.mySwitch(mySwitchToState);
+    			//publishResultTemp = this.mySwitch(mySwitchToState);
+    			publishResultTemp = publish(philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
+    			
     			publishResultTemp = 1;
     		}
     	}
@@ -270,13 +273,21 @@ public class Light_Philips_Hue_GO2_Tool {
 	 * 这个方法 是发送了这个 get, 可以让 服务器那边 进行通知所有的subscriber 现在当前的状态
 	 * @return
 	 */
+	/*
 	public int sendGetToNotifySubscriberToGetStatus() {
 		this.publish("zigbee2mqtt/0x0017880109e5d363"+"/get", "");
 		return 1;
+	}*/
+	
+	/**
+	 * "zigbee2mqtt/0x0017880109e5d363"+"/get"
+	 * 
+	 * @return
+	 */
+	public int sendGetToNotifySubscriberToGetStatus(PhilipsHueGo2Entity philipsHueGo2Entity1) {
+		this.publish(philipsHueGo2Entity1.getTopicUrl_get(), "");
+		return 1;
 	}
-	
-	
-	
 	
 	
 	

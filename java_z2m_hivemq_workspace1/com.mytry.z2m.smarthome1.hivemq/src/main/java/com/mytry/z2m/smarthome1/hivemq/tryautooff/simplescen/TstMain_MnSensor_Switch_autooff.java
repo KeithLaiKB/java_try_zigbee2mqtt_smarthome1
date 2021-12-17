@@ -125,7 +125,14 @@ public class TstMain_MnSensor_Switch_autooff {
         c1.addSubscription().topicFilter(topicSwitchSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
         
         PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
+        plipMotionSensorEntity1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+        plipMotionSensorEntity1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+        plipMotionSensorEntity1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+        
         SonoffS31LiteEntity sonoffS31LiteEntity1 = new SonoffS31LiteEntity();
+        sonoffS31LiteEntity1.setTopicUrl("zigbee2mqtt/0x00124b00250c256f");
+        sonoffS31LiteEntity1.setTopicUrl_get("zigbee2mqtt/0x00124b00250c256f/get");
+        sonoffS31LiteEntity1.setTopicUrl_set("zigbee2mqtt/0x00124b00250c256f/set");
         //
         // 把这个放到 那个线程 当中, 这样 这里变, Switcher_AutoOff3里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
         ((Switcher_Sonoff31Lite_Autooff)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
@@ -212,7 +219,8 @@ public class TstMain_MnSensor_Switch_autooff {
                         	// 例如 现在很暗, 但是已经开了 就不开灯了
                         	int switchTrancResultTemp = switcher_Sonoff31LiteToolTmp.mySwitchTransaction("ON", sonoffS31LiteEntity1);
                         	if(switchTrancResultTemp == 0) {
-                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
                         	}
                         	//
                         	

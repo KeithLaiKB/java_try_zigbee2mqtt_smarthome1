@@ -159,9 +159,21 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
         //
         //
         PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
-        //
+        plipMotionSensorEntity1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+        plipMotionSensorEntity1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+        plipMotionSensorEntity1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+        
         SonoffS31LiteEntity sonoffS31LiteEntity1 = new SonoffS31LiteEntity();
+        sonoffS31LiteEntity1.setTopicUrl("zigbee2mqtt/0x00124b00250c256f");
+        sonoffS31LiteEntity1.setTopicUrl_get("zigbee2mqtt/0x00124b00250c256f/get");
+        sonoffS31LiteEntity1.setTopicUrl_set("zigbee2mqtt/0x00124b00250c256f/set");
+        
+        
         PhilipsHueGo2Entity philipsHueGo2Entity1 = new PhilipsHueGo2Entity();
+        philipsHueGo2Entity1.setTopicUrl("zigbee2mqtt/0x0017880109e5d363");
+        philipsHueGo2Entity1.setTopicUrl_get("zigbee2mqtt/0x0017880109e5d363/get");
+        philipsHueGo2Entity1.setTopicUrl_set("zigbee2mqtt/0x0017880109e5d363/set");
+        //
         //
         // group
         ArrayList<AbstractSmartDeivce> myDeviceGroup1 = new ArrayList<AbstractSmartDeivce>();
@@ -179,10 +191,6 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
         ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setPhilipsHueGo2Entity1(philipsHueGo2Entity1);
         //
         //
-        //
-        //PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = null;
-        //SonoffS31LiteEntity sonoffS31LiteEntity1 = null;
-        
         c1.callback(publish -> 
         	{
         		String jsonRsTmp = new String(publish.getPayloadAsBytes());
@@ -193,13 +201,6 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
         			plipMotionSensorEntity1.setAttributeFromJson(jsonRsTmp);
         			System.out.println("phisssenentity:"+plipMotionSensorEntity1.toString());
         			
-        			/*
-                	try {
-                		Thread.sleep(200000);
-            		} catch (InterruptedException e) {
-            			// TODO Auto-generated catch block
-            			e.printStackTrace();
-            		}*/
         			
         			Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp			= new Switcher_Sonoff31Lite_Tool();
         			Light_Philips_Hue_GO2_Tool			light_Philips_Hue_GO2_ToolTmp			= new Light_Philips_Hue_GO2_Tool();
@@ -300,7 +301,8 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
                         	// 因为 可能 没成功的 是因为 最开始运行时, 那些状态 还是null, 而我们一开始收到的信息可能就是 Motion sensor
                         	// 此时第一次 占用了callback的执行, 所以其他subscription 是暂时无法处理 callback的
                         	if(runResultTmp!=null && runResultTmp.equals(false)==true) {
-                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
                         	}
                         	
                         	//
@@ -349,10 +351,6 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
         	}
         ); 	// set callback
         c1.send();		//subscribe callback and something 
-        
-        //Switcher_Sonoff31lite_Toola tryStartTmp2= new Switcher_Sonoff31lite_Toola();
-        //tryStartTmp2.getStatus0();
-        //
         
         
         System.out.println("enter to exit!!!!!!!!!!!!!!!!!!!!!!!!!!!");

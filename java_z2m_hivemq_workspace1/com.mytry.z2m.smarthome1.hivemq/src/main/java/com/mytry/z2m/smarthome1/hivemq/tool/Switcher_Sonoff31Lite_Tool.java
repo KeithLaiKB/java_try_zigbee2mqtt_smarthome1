@@ -63,6 +63,7 @@ public class Switcher_Sonoff31Lite_Tool {
     }
 	
 	
+	
 	/**
 	 * 
 	 * @param mySwitchToState: "ON","OFF"    要转换成为的状态
@@ -102,7 +103,8 @@ public class Switcher_Sonoff31Lite_Tool {
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
     		System.out.println("mySwitchTransaction"+"switcher null state, try to get switcher status");
-        	this.sendGetToNotifySubscriberToGetStatus();            	
+        	//this.sendGetToNotifySubscriberToGetStatus(); 
+    		this.sendGetToNotifySubscriberToGetStatus(sonoffS31LiteEntity1);
         	//
         	publishResultTemp = 0;
     	}
@@ -117,7 +119,9 @@ public class Switcher_Sonoff31Lite_Tool {
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
     			System.err.println("mySwitchTransaction"+"switcher different state, changing");
-    			publishResultTemp = this.mySwitch(mySwitchToState);
+    			//publishResultTemp = this.mySwitch(mySwitchToState);
+    			
+    			publishResultTemp = this.publish(sonoffS31LiteEntity1.getTopicUrl_set(),mySwitchToState);
     			publishResultTemp = 1;
     		}
     	}
@@ -269,14 +273,23 @@ public class Switcher_Sonoff31Lite_Tool {
 	 * 这个方法 是发送了这个 get, 可以让 服务器那边 进行通知所有的subscriber 现在当前的状态
 	 * @return
 	 */
+	/*
 	public int sendGetToNotifySubscriberToGetStatus() {
 		this.publish("zigbee2mqtt/0x00124b00250c256f"+"/get", "");
 		return 1;
+	}*/
+	
+	
+	
+	/**
+	 * 这个方法 是发送了这个 get, 可以让 服务器那边 进行通知所有的subscriber 现在当前的状态
+	 * "zigbee2mqtt/0x00124b00250c256f"+"/get"
+	 * @return
+	 */
+	public int sendGetToNotifySubscriberToGetStatus(SonoffS31LiteEntity sonoffS31LiteEntity1) {
+		this.publish(sonoffS31LiteEntity1.getTopicUrl_get(), "");
+		return 1;
 	}
-	
-	
-	
-	
 	
 	
 	

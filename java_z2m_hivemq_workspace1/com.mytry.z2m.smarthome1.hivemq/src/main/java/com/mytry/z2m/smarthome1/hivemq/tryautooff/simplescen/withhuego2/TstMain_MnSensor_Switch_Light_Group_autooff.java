@@ -155,9 +155,20 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff {
         //
         //
         PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
-        //
+        plipMotionSensorEntity1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+        plipMotionSensorEntity1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+        plipMotionSensorEntity1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+        
         SonoffS31LiteEntity sonoffS31LiteEntity1 = new SonoffS31LiteEntity();
+        sonoffS31LiteEntity1.setTopicUrl("zigbee2mqtt/0x00124b00250c256f");
+        sonoffS31LiteEntity1.setTopicUrl_get("zigbee2mqtt/0x00124b00250c256f/get");
+        sonoffS31LiteEntity1.setTopicUrl_set("zigbee2mqtt/0x00124b00250c256f/set");
+        
+        
         PhilipsHueGo2Entity philipsHueGo2Entity1 = new PhilipsHueGo2Entity();
+        philipsHueGo2Entity1.setTopicUrl("zigbee2mqtt/0x0017880109e5d363");
+        philipsHueGo2Entity1.setTopicUrl_get("zigbee2mqtt/0x0017880109e5d363/get");
+        philipsHueGo2Entity1.setTopicUrl_set("zigbee2mqtt/0x0017880109e5d363/set");
         //
         // 把这个放到 那个线程 当中, 这样 这里变, Switcher_AutoOff3里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
         ((Switcher_Sonoff31Lite_Autooff)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
@@ -257,7 +268,8 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff {
                         	// 因为 可能 没成功的 是因为 最开始运行时, 那些状态 还是null, 而我们一开始收到的信息可能就是 Motion sensor
                         	// 此时第一次 占用了callback的执行, 所以其他subscription 是暂时无法处理 callback的
                         	if(switchTrancResultTemp == 0 || light_switchTrancResultTemp1 == 0) {
-                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
                         	}                   	
                         	
                         	
