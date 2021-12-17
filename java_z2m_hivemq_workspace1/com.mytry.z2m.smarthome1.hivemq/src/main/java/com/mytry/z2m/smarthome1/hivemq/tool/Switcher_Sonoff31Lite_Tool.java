@@ -96,10 +96,15 @@ public class Switcher_Sonoff31Lite_Tool {
     	//
     	// 如果是null, 就去发送信息, 等待下一次 调用这个方法
     	// 例如 第一次传感器 过来的时候, 我的switcher 可能初始值是null, 那么就不去发送信息
-    	// 第二次你运动的时候, 再传来信息的时候, 不是switcher不是null就可以了
+    	// 第二次你运动的时候, 再传来信息的时候, 不是switcher是null就可以了
     	// 因为 虽然我main 用了两个subscription, 但是callback中只要有一个sleep 那么整个callback都无法运行
     	// 也就是说 即使我callback 写了 switcher 的监听, 但整个callback 当前都在被sensor这个分支 用
     	// 所以switcher 状态是没有办法改变的
+    	// 但是 不用担心, 如无意外, 也就是第一次可能会出现这样的状况而已, 
+    	// 因为每次进行开关以后, 我们这边是有 subscription
+    	// 所以我们是 会收到 当前这个switcher的状态, 
+    	// 然后我们的这个entity就会把当前状态记录更新下来
+    	// 每次getState也是从entity中的 attribute 来获得
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
     		System.out.println("mySwitchTransaction"+"switcher null state, try to get switcher status");
