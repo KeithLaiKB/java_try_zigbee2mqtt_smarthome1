@@ -255,7 +255,7 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
                 		if(illuminance_luxTmp.compareTo(150)<=0) {
                     		System.out.println("it is too dark, i try to switch on the plug");
                         	try {
-                        		Thread.sleep(500);
+                        		Thread.sleep(200);
                     		} catch (InterruptedException e) {
                     			// TODO Auto-generated catch block
                     			e.printStackTrace();
@@ -296,10 +296,13 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
                         			runResultTmp = Boolean.valueOf(false);
                         		}
                         	}
-                        	// 如果中途发现 失败
+                        	//
+                        	// 注意!!!!!!
                         	// 如果其中有一个或以上 没成功, 则进行重新再申请一次 感应器的状态,
-                        	// 因为 可能 没成功的 是因为 最开始运行时, 那些状态 还是null, 而我们一开始收到的信息可能就是 Motion sensor
-                        	// 此时第一次 占用了callback的执行, 所以其他subscription 是暂时无法处理 callback的
+                        	// 因为 可能 没成功  是因为 最开始运行时, 那些状态 还是null 
+                        	// 而我们一开始收到的信息可能就是 Motion sensor, 此时正在处于 这个第一次 占用了callback的执行, 
+                        	// 因为他们 共同使用同一个 callback
+                        	// 所以其他subscription 是暂时无法处理 当前这个 callback的
                         	if(runResultTmp!=null && runResultTmp.equals(false)==true) {
                         		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
                         		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
@@ -307,16 +310,6 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
                         	
                         	//
                         	
-                        	//因为光 有可能在这个数字上波动, 我们的灯可能会每隔几分钟获得结果  随着 数值 上下波动而 不停地开关灯
-                        	//所以 一旦低于这个数值, 我们就让他开灯, 然后等十五分钟后再去看看
-                        	try {
-                        		//Thread.sleep(150000);
-                        		//先用15秒调试
-                        		Thread.sleep(500);
-                    		} catch (InterruptedException e) {
-                    			// TODO Auto-generated catch block
-                    			e.printStackTrace();
-                    		}
                     	}
                 	}
                 	// 如果当前 感应器表示 没有人了
