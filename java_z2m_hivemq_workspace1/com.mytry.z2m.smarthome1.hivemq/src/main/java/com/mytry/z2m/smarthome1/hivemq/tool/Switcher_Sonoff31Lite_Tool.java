@@ -1,6 +1,7 @@
 package com.mytry.z2m.smarthome1.hivemq.tool;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -28,6 +29,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
  * 
  * 
@@ -56,12 +58,13 @@ public class Switcher_Sonoff31Lite_Tool {
 	 * @param mySwitchState: "ON","OFF"
 	 * @return 
 	 */
+	/*
 	public int mySwitch(String mySwitchState)  {
 	    //String topic        = "MQTT Examples";
 	    String topic        = "zigbee2mqtt/0x00124b00250c256f/set";
 	    return this.publish(topic, mySwitchState);
     }
-	
+	*/
 	
 	
 	/**
@@ -125,9 +128,10 @@ public class Switcher_Sonoff31Lite_Tool {
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
     			System.err.println("mySwitchTransaction"+"switcher different state, changing");
     			//publishResultTemp = this.mySwitch(mySwitchToState);
-    			
-    			publishResultTemp = this.publish(sonoffS31LiteEntity1.getTopicUrl_set(),mySwitchToState);
-    			publishResultTemp = 1;
+    			//
+    			//
+    			//publishResultTemp = this.publish(sonoffS31LiteEntity1.getTopicUrl_set(),mySwitchToState);
+    			publishResultTemp = publish(brokerIpAddress1, sonoffS31LiteEntity1.getTopicUrl_set() , mySwitchToState);
     		}
     	}
     	else {
@@ -139,28 +143,58 @@ public class Switcher_Sonoff31Lite_Tool {
     }
 
 	
+	
+	/**
+	 * 这个把 连接broker的操作 抽出去当工具类了, 使得代码看起来更舒服了, 但实际操作跟下面的publish 差不多作用, 用这个阅读起来我感觉更好
+	 * 
+	 * @param brokerIpAddress
+	 * @param topicUrlToPublish
+	 * @param mySwitchState
+	 * @return
+	 */
+	public int publish(String brokerIpAddress, String topicUrlToPublish , String mySwitchState)  {
+		
+		String clientId     = "JavaSample_publisher1";
+		final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress,1883);
+		//
+		// 制作 json
+		LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
+    	//lhmap1.put("linkquality", 132);
+    	if(mySwitchState.contentEquals("ON")==true) {
+    		lhmap1.put("state", "ON");
+    	}
+    	else if(mySwitchState.contentEquals("OFF")==true) {
+    		lhmap1.put("state", "OFF");
+    	}
+    	else if(mySwitchState.contentEquals("")==true) {
+    		lhmap1.put("state", "");
+    	}
+    	//
+    	//
+    	ObjectMapper mapperTmp = new ObjectMapper();
+    	String str_content_tmp = null;
+		try {
+			str_content_tmp = mapperTmp.writeValueAsString(lhmap1);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ArrayList<String> aryList_str_jsonTmp = new ArrayList<String>();
+		aryList_str_jsonTmp.add(str_content_tmp);
+		
+		return MyPublishTool.myPulibsh(LOCALHOST_EPHEMERAL1, clientId, topicUrlToPublish, aryList_str_jsonTmp);
+	}
+	
+	
+	
 	public int publish(String topicUrlToPublish , String mySwitchState)  {
 
-        //String topic        = "MQTT Examples";
-        //String topic        = "zigbee2mqtt/0x00124b00250c256f/get";
-        //String content      = "Message from MqttPublishSample";
-        String content      = "你好";
-        //String content      = "hi_myfriend";
-        int qos             = 2;
-        //String broker       = "tcp://iot.eclipse.org:1883";
-        String broker       = "tcp://localhost:1883";
-        //String broker       = "ssl://localhost:8883";
         String clientId     = "JavaSample_publisher1";
         //MemoryPersistence persistence = new MemoryPersistence();
 
         
         //------------------------------- 创建 mqtt client --------------------------------------
-        /*
-        Mqtt5BlockingClient client = Mqtt5Client.builder()
-                .identifier(UUID.randomUUID().toString())
-                .serverHost("broker.hivemq.com")
-                .buildBlocking();
-        */
         final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress1,1883);
         //
         //
@@ -227,32 +261,6 @@ public class Switcher_Sonoff31Lite_Tool {
         	c1.payload(str_content_tmp.getBytes());
         	
         	
-        	/* 这一部分是问题, 删掉就没问题了
-        	CompletableFuture<Mqtt5PublishResult> completableFuture1 = c1.send();
-            //
-        	
-        	// 等待 发送 publish
-            long waitTimesTmp = 0L;
-            long waitLimitTimesTmp = 10000L;
-            while (completableFuture1.isDone() == false) {
-            	try {
-    				Thread.sleep(500);
-    			} catch (InterruptedException e) {
-    				// TODO Auto-generated catch block
-    				e.printStackTrace();
-    			}
-            	waitTimesTmp = waitTimesTmp + 500L;
-            	if (waitTimesTmp> waitLimitTimesTmp) {
-            		System.err.println(this.getClass().getName()+ ":publish time out,"+waitTimesTmp+","+waitLimitTimesTmp);
-            		System.err.println(topicUrlToPublish+"/"+str_content_tmp);
-            		return -1;
-            		//throw new Exception(this.getClass().getName()+ "getStatus time out");
-            		
-            	}
-            } 
-        	 
-        	 */
-
         	// send(): the result when the built Mqtt5Publish is sent by the parent
         	c1.send();
         	System.out.println("hello:"+str_content_tmp);
@@ -292,8 +300,30 @@ public class Switcher_Sonoff31Lite_Tool {
 	 * @return
 	 */
 	public int sendGetToNotifySubscriberToGetStatus(SonoffS31LiteEntity sonoffS31LiteEntity1) {
-		this.publish(sonoffS31LiteEntity1.getTopicUrl_get(), "");
-		return 1;
+		//this.publish(sonoffS31LiteEntity1.getTopicUrl_get(), "");
+		
+		String clientId     = "JavaSample_publisher1";
+		final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress1,1883);
+		//
+		// 制作 json
+		LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
+    	lhmap1.put("state", "");
+
+    	//
+    	//
+    	ObjectMapper mapperTmp = new ObjectMapper();
+    	String str_content_tmp = null;
+		try {
+			str_content_tmp = mapperTmp.writeValueAsString(lhmap1);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ArrayList<String> aryList_str_jsonTmp = new ArrayList<String>();
+		aryList_str_jsonTmp.add(str_content_tmp);
+		
+		return MyPublishTool.myPulibsh(LOCALHOST_EPHEMERAL1, clientId, sonoffS31LiteEntity1.getTopicUrl_get(), aryList_str_jsonTmp);
 	}
 	
 	

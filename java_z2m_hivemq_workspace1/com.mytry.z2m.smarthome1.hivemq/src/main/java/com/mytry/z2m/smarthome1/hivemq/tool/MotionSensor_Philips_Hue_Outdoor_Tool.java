@@ -78,6 +78,8 @@ public class MotionSensor_Philips_Hue_Outdoor_Tool {
     	return -1;
     }*/
 
+	
+	
 	/**
 	 * ref: https://www.zigbee2mqtt.io/devices/9290019758.html
 	 * @param topicUrlToPublish
@@ -86,15 +88,6 @@ public class MotionSensor_Philips_Hue_Outdoor_Tool {
 	 */
 	public int publish(String topicUrlToPublish , String mySwitchState)  {
 
-        //String topic        = "MQTT Examples";
-        //String topic        = "zigbee2mqtt/0x00124b00250c256f/get";
-        //String content      = "Message from MqttPublishSample";
-        String content      = "你好";
-        //String content      = "hi_myfriend";
-        int qos             = 2;
-        //String broker       = "tcp://iot.eclipse.org:1883";
-        String broker       = "tcp://localhost:1883";
-        //String broker       = "ssl://localhost:8883";
         String clientId     = "JavaSample_publisher1";
         //MemoryPersistence persistence = new MemoryPersistence();
 
