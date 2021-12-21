@@ -107,7 +107,7 @@ public class Switcher_Sonoff31Lite_Tool {
     	// 每次getState也是从entity中的 attribute 来获得
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
-    		System.out.println("mySwitchTransaction"+"hue go 2 light null state, try to get hue go 2 light status");
+    		System.out.println("mySwitchTransaction"+"SonoffS31Lite switcher null state, try to get hue go 2 light status");
         	//this.sendGetToNotifySubscriberToGetStatus();  
     		this.sendGetToNotifySubscriberToGetStatus(sonoffS31LiteEntity1);  
         	//
@@ -118,14 +118,14 @@ public class Switcher_Sonoff31Lite_Tool {
     	else if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
     		// 如果 当前状态 和 想要改变成的状态 一直, 则无需改变
     		if(switchStateTmp.equals(mySwitchToState)==true) {
-    			System.err.println("mySwitchTransaction"+"hue go 2 light same state");
+    			System.err.println("mySwitchTransaction"+"SonoffS31Lite switcher same state");
     			// do nothing
     			//publishResultTemp = 1;
     			trancLogicResultTemp = EnumDeviceTrancLogicResult.NoNeedToChange;
     		}
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
-    			System.err.println("mySwitchTransaction"+"hue go 2 light different state, changing");
+    			System.err.println("mySwitchTransaction"+"SonoffS31Lite switcher different state, changing");
     			//publishResultTemp = this.mySwitch(mySwitchToState);
     			//
     			//
@@ -188,6 +188,36 @@ public class Switcher_Sonoff31Lite_Tool {
 
 	
 	
+	
+	
+	public String establishPublishJson(String mySwitchState)  {
+		//
+		// 制作 json
+		LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
+    	//lhmap1.put("linkquality", 132);
+    	if(mySwitchState.contentEquals("ON")==true) {
+    		lhmap1.put("state", "ON");
+    	}
+    	else if(mySwitchState.contentEquals("OFF")==true) {
+    		lhmap1.put("state", "OFF");
+    	}
+    	else if(mySwitchState.contentEquals("")==true) {
+    		lhmap1.put("state", "");
+    	}
+    	//
+    	//
+    	ObjectMapper mapperTmp = new ObjectMapper();
+    	String str_content_tmp = null;
+		try {
+			str_content_tmp = mapperTmp.writeValueAsString(lhmap1);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		
+		return str_content_tmp;
+	}
 	/**
 	 * 这个把 连接broker的操作 抽出去当工具类了, 使得代码看起来更舒服了, 但实际操作跟下面的publish 差不多作用, 用这个阅读起来我感觉更好
 	 * 

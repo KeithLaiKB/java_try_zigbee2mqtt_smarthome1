@@ -188,7 +188,34 @@ public class Light_Philips_Hue_GO2_Tool {
 	
 	
 	
-	
+	public String establishPublishJson(String mySwitchState)  {
+		//
+		// 制作 json
+		LinkedHashMap<String,Object> lhmap1 = new LinkedHashMap<>();
+    	//lhmap1.put("linkquality", 132);
+    	if(mySwitchState.contentEquals("ON")==true) {
+    		lhmap1.put("state", "ON");
+    	}
+    	else if(mySwitchState.contentEquals("OFF")==true) {
+    		lhmap1.put("state", "OFF");
+    	}
+    	else if(mySwitchState.contentEquals("")==true) {
+    		lhmap1.put("state", "");
+    	}
+    	//
+    	//
+    	ObjectMapper mapperTmp = new ObjectMapper();
+    	String str_content_tmp = null;
+		try {
+			str_content_tmp = mapperTmp.writeValueAsString(lhmap1);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		
+		return str_content_tmp;
+	}
 	
 
 	

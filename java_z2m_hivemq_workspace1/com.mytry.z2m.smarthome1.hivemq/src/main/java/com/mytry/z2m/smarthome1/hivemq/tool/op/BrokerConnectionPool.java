@@ -95,26 +95,28 @@ public class BrokerConnectionPool {
 	}*/
 	
 	//创建数据库连接
-	private int addConnection(String brokerIpAddress1, int brokerPort, String clientId) {
+	private BrokerConnection addConnection(String brokerIpAddress1, int brokerPort, String clientId) {
 		// 判断 当前已有的size  加上    我要加的size 是否超过 maxSize
 		if(initSize + arylist_brokerConnection.size() + 1 <= maxSize){
 			//
-			System.out.println("初始化了"+  1 +"个连接");	
+			System.out.println("新建了"+  1 +"个连接");	
+			
 				
 			BrokerConnection broCon = new BrokerConnection(EnumBrokerConnectionStatus.RELEASED, brokerIpAddress1, brokerPort, clientId);
 			//
 			// 往池子里 添加元素
 			boolean resultTmp = arylist_brokerConnection.add(broCon);
 			if(resultTmp==true) {
-				return 1;
+				System.out.println("新建可用连接:"+broCon.getMyUuid1());
+				return broCon;
 			}
 			else {
 				System.err.println(this.getClass().getName()+": some thing wrong when adding connection in connection pool");
-				return -1;
+				return null;
 			}
 		}
 		System.err.println("connection num in connection pool is full, couldn't add more conection");
-		return -1;
+		return null;
 	}
 	
 	
@@ -159,17 +161,22 @@ public class BrokerConnectionPool {
 		
 		for(int i =0;i<=arylist_brokerConnection.size()-1; i++ ){
 			BrokerConnection broCon = arylist_brokerConnection.get(i);
-			// 如果这个 连接对象 可用
-			if(broCon.getStatus().equals(EnumBrokerConnectionStatus.RELEASED)==true){
-				// 如果 这个 连接的 IP 和 port 相同
-				if(brokerIpAddress.equals(broCon.getBrokerIpAddress())==true && brokerPort==broCon.getBrokerPort()) {
-					// 如果 这个 连接的 client 相同 
-					if(clientId.equals(broCon.getClient1Identifier())==true) {
+			// 如果 这个 连接的 IP 和 port 相同
+			if(brokerIpAddress.equals(broCon.getBrokerIpAddress())==true && brokerPort==broCon.getBrokerPort()) {
+				// 如果 这个 连接的 client 相同 
+				if(clientId.equals(broCon.getClient1Identifier())==true) {
+					// 如果这个 连接对象 可用
+					if(broCon.getStatus().equals(EnumBrokerConnectionStatus.RELEASED)==true){
+						System.out.println("找到可用连接:"+broCon.getMyUuid1());
 						iBroCon = (IBrokerConnection) broCon;
 						return iBroCon;
 					}
+					else {
+						System.out.println("连接:"+broCon.getMyUuid1()+", 该对象繁忙");
+					}
 				}
 			}
+
 		}
 
 		return null;
@@ -179,8 +186,11 @@ public class BrokerConnectionPool {
 		IBrokerConnection iBrokerConnection = this.getAvailableIBrokerConnectionByBrokerIpAddressAndBrokerPortAndClientId(brokerIpAddress, brokerPort, clientId);
 		// 没有 找到 制定参数的 连接对象, 则自己创造一个 
 		if(iBrokerConnection == null) {
-			this.addConnection(brokerIpAddress, brokerPort, clientId);
+			iBrokerConnection = this.addConnection(brokerIpAddress, brokerPort, clientId);
 			System.out.println("add connection:"+brokerIpAddress+":"+brokerPort+", clientId is:"+clientId);
+		}
+		else {
+			
 		}
 		return iBrokerConnection;
 	}

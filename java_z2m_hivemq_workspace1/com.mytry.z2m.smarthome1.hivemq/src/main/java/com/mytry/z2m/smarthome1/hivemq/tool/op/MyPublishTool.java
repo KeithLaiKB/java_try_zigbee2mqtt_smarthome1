@@ -70,16 +70,18 @@ public class MyPublishTool {
 	
 	
 	
-	
+
 	/**
 	 * 
-	 * @param LOCALHOST_EPHEMERAL1
+	 * @param brokerIpAddress
+	 * @param brokerPort
 	 * @param clientId
-	 * @param topicUrlToPublish
-	 * @param arraylist_str_json 这个可以存放json 和 相对应的 topicUrl, 可以批量一次性多次 发送 不同的数据 到同一个 topic, 当然 这其实不一定是好的, 但是以防万一需要, 这样就不需要频繁的 connect 和 disconnect 了
+	 * @param aryList_topicUrlToPublish
+	 * @param aryList_str_json  这个可以存放json 和 相对应的 topicUrl, 可以批量一次性多次 发送 不同的数据 到同一个 topic, 当然 这其实不一定是好的, 但是以防万一需要, 这样就不需要频繁的 connect 和 disconnect 了
+	 * @param timeGapEachDevice	发送每个设备信息 之间的间隔(milisecond), 这样可以做出  很明显的 按顺序开灯的效果
 	 * @return
 	 */
-	public static int myPulibsh(String brokerIpAddress, int brokerPort, String clientId, ArrayList<String>  aryList_topicUrlToPublish, ArrayList<String> aryList_str_jsonTmp) {
+	public static int myPulibsh(String brokerIpAddress, int brokerPort, String clientId, ArrayList<String>  aryList_topicUrlToPublish, ArrayList<String> aryList_str_json, long timeGapEachDevice) {
         //
 		com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder.Send<CompletableFuture<Mqtt5PublishResult>> publishBuilder_sendTmp = null; 
 		
@@ -90,11 +92,11 @@ public class MyPublishTool {
 			// 利用 BrokerConnection 接口  去connect 我们的broker 
 			publishBuilder_sendTmp = iBroCon.myConnect();
 			//
-			//
+			//-----------------发送-------------------
 			if (publishBuilder_sendTmp!=null) {
-		        for(int i=0; i<=aryList_str_jsonTmp.size()-1; i++) {
+		        for(int i=0; i<=aryList_str_json.size()-1; i++) {
 		        	
-		        	String str_jsonTmp = aryList_str_jsonTmp.get(i);
+		        	String str_jsonTmp = aryList_str_json.get(i);
 		        	String topicUrlToPublishTmp = aryList_topicUrlToPublish.get(i);
 		        	
 		        	com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder.Send.Complete<CompletableFuture<Mqtt5PublishResult>> c1 = publishBuilder_sendTmp.topic(topicUrlToPublishTmp);
@@ -109,8 +111,17 @@ public class MyPublishTool {
 		    			// TODO Auto-generated catch block
 		    			e.printStackTrace();
 		    		}
+		            
+		            
+		            try {
+		        		Thread.sleep(timeGapEachDevice);
+		    		} catch (InterruptedException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
 		        }
 			}
+			//------------------------------------
 			//关闭连接
 			iBroCon.myReleaseConnect();
 		} catch (Exception e) {

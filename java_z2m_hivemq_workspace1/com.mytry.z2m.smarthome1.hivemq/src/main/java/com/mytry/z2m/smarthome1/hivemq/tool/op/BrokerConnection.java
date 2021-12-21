@@ -143,7 +143,28 @@ public class BrokerConnection implements IBrokerConnection{
 	//释放连接池中的连接对象
 	@Override
 	public void myReleaseConnect(){
-		System.out.println("-----------释放连接-----------");
+		System.out.println("-----------正在 释放连接-----------");
+		
+		
+		this.client1.disconnect();
+		
+		//wait
+    	try {
+    		Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	
+    	this.status = EnumBrokerConnectionStatus.RELEASED;
+    	System.out.println("-----------完成 释放连接, 该连接可用-----------");
+	}
+	
+	
+	//释放连接池中的连接对象
+	public void myDeleteConnect(){
+		System.out.println("-----------删除该连接-----------");
 		
 		
 		this.client1.disconnect();
@@ -157,16 +178,11 @@ public class BrokerConnection implements IBrokerConnection{
 		}
     	
     	
-	
+       	this.status = EnumBrokerConnectionStatus.RELEASED;
     	// 清空 client1 和 那个外部可使用的send
     	this.client1 = null;
     	this.publishBuilder_send1 = null;
-    	
-    	this.status = EnumBrokerConnectionStatus.RELEASED;
 	}
-	
-	
-	
 	
 	
 }

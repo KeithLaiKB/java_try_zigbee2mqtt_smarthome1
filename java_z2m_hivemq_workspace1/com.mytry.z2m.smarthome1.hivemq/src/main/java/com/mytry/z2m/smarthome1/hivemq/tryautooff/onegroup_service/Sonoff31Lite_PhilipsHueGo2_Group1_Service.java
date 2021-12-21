@@ -26,10 +26,12 @@ import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.tool.EnumDeviceTrancLogicResult;
 import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
+import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
  * 
  * 
@@ -44,7 +46,9 @@ import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
  */
 public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
 	
-
+	String brokerIpAddress1 = "192.168.50.179";
+	int brokerPort1 = 1883;
+	String clientId1 = "IamClient1";
 
 	private static  volatile Sonoff31Lite_PhilipsHueGo2_Group1_Service instance;
 	    
@@ -64,7 +68,9 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
 
 	
 	public int myOpen(PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity, ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv interfaceTryAutoOff1,ArrayList<AbstractSmartDeivce> myDeviceGroup){
-
+		// 设置每个设备打开之间的间隔, 当然你设置成0也可以
+		// 设置一定的长时间的间隔, 可以呈现比较好看的 按顺序开灯的效果
+		long timeGapEachDeviceTmp = 200L;
 		
 		Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp			= new Switcher_Sonoff31Lite_Tool();
 		Light_Philips_Hue_GO2_Tool			light_Philips_Hue_GO2_ToolTmp			= new Light_Philips_Hue_GO2_Tool();
@@ -132,15 +138,22 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
         		// 开灯, 传当前 的 开关 状态过去, 因为事务需要判断 要转变成的状态 和 当前状态, 来进行调整
             	// 例如 现在很暗, 但是已经开了 就不开灯了
             	Boolean runResultTmp = null;
-            	for(int groupTmp1=0; groupTmp1 <= myDeviceGroup.size()-1; groupTmp1++) {   
-                	int group_inner_switch_result = 0;
+            	
+            	ArrayList<String> aryList_str_json 		= new ArrayList<String>();
+            	ArrayList<String> aryList_topicUrlToPublish = new ArrayList<String>();
+            	//
+            	for(int groupTmp1=0; groupTmp1 <= myDeviceGroup.size()-1; groupTmp1++) {
+            		EnumDeviceTrancLogicResult group_inner_switch_trancLogicResult = null;
                 	//
                 	//
                 	//
                 	SonoffS31LiteEntity sonoffS31LiteEntityTmp 	= null;
                 	PhilipsHueGo2Entity philipsHueGo2EntityTmp	= null;
                 	//
+                	String jsonToPublishTmp = null;
+                	String topicUrlToPublishTmp = null;
                 	//
+                	/*
             		if(myDeviceGroup.get(groupTmp1).getClass().getName().equals(SonoffS31LiteEntity.class.getName())==true) {
             			sonoffS31LiteEntityTmp = (SonoffS31LiteEntity) myDeviceGroup.get(groupTmp1);
             			group_inner_switch_result = switcher_Sonoff31LiteToolTmp.mySwitchTransaction("ON", sonoffS31LiteEntityTmp);
@@ -153,6 +166,86 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
             		if(group_inner_switch_result<=0){
             			runResultTmp = Boolean.valueOf(false);
             		}
+            		
+            		*/
+                	
+                	// 如果当前元素是 sonoffS31LiteEntity 
+            		if(myDeviceGroup.get(groupTmp1).getClass().getName().equals(SonoffS31LiteEntity.class.getName())==true) {
+            			// 取出该元素
+            			sonoffS31LiteEntityTmp = (SonoffS31LiteEntity) myDeviceGroup.get(groupTmp1);
+            			//
+            			//
+            			// 判断是否可以 和 需要 去switch
+            			group_inner_switch_trancLogicResult = switcher_Sonoff31LiteToolTmp.mySwitchTransactionLogic("ON", sonoffS31LiteEntityTmp);
+            			// 判断需要 switch
+            			// 然后 去得到 switch操作 所需要的json
+            			if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.NeedToChange)) {
+            				//
+            				jsonToPublishTmp 	 = switcher_Sonoff31LiteToolTmp.establishPublishJson("ON");
+            				topicUrlToPublishTmp = sonoffS31LiteEntityTmp.getTopicUrl_set();
+            			}
+            			// 判断已经是当前需要的转换的状态了, 不需要去switch了
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.NoNeedToChange)) {
+            				// do nothing
+            			}
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.SOMETHING_WRONG)) {
+            				
+            			}
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.DEVICE_NULL)) {
+            				
+            			}
+            			
+            		}
+            		else if(myDeviceGroup.get(groupTmp1).getClass().getName().equals(PhilipsHueGo2Entity.class.getName())==true) {
+            			philipsHueGo2EntityTmp = (PhilipsHueGo2Entity) myDeviceGroup.get(groupTmp1);
+            			//group_inner_switch_trancLogicResult = light_Philips_Hue_GO2_ToolTmp.mySwitchTransactionLogic("ON", philipsHueGo2EntityTmp);
+            			//
+            			//
+            			// 判断是否可以 和 需要 去switch
+            			group_inner_switch_trancLogicResult = light_Philips_Hue_GO2_ToolTmp.mySwitchTransactionLogic("ON", philipsHueGo2EntityTmp);
+            			// 判断需要 switch
+            			// 然后 去得到 switch操作 所需要的json
+            			if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.NeedToChange)) {
+            				//
+            				jsonToPublishTmp 	 = light_Philips_Hue_GO2_ToolTmp.establishPublishJson("ON");
+            				topicUrlToPublishTmp = philipsHueGo2EntityTmp.getTopicUrl_set();
+            			}
+            			// 判断已经是当前需要的转换的状态了, 不需要去switch了
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.NoNeedToChange)) {
+            				// do nothing
+            			}
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.SOMETHING_WRONG)) {
+            				
+            			}
+            			else if(group_inner_switch_trancLogicResult.equals(EnumDeviceTrancLogicResult.DEVICE_NULL)) {
+            				
+            			}
+            		
+            		
+            		}
+            		
+            		// 判断当前这个元素 有需要去switch操作的json
+            		// 分别放到各自的数组里, 到时和其他设备一起处理
+            		if(jsonToPublishTmp!=null && topicUrlToPublishTmp!=null) {
+            			aryList_topicUrlToPublish.add(topicUrlToPublishTmp);
+            			aryList_str_json.add(jsonToPublishTmp);
+            		}
+            		else {
+            			runResultTmp = Boolean.valueOf(false);
+            		}
+            		
+            		
+            		
+
+
+            	}
+            	//
+            	//
+            	// 如果 两个设备 其中有一个 设备 需要 去switch的话, 而另外一个设备可能出问题了, 
+            	// 则先去执行 那个需要去switch的
+            	// 另外一个 不成功的没关系, 后面会处理
+            	if(aryList_str_json.size()>0) {
+            		MyPublishTool.myPulibsh(brokerIpAddress1, brokerPort1, clientId1, aryList_topicUrlToPublish, aryList_str_json, timeGapEachDeviceTmp);
             	}
             	//
             	// 注意!!!!!!
