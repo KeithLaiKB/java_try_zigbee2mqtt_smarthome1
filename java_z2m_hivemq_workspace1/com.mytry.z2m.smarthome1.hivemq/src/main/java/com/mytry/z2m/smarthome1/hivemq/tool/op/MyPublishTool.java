@@ -20,7 +20,7 @@ public class MyPublishTool {
 	 * @param clientId
 	 * @param topicUrlToPublish
 	 * @param arraylist_str_json 这个可以存放多个json, 可以批量一次性多次 发送 不同的数据 到同一个 topic, 当然 这其实不一定是好的, 但是以防万一需要, 这样就不需要频繁的 connect 和 disconnect 了
-	 * @return
+	 * @return 成功返回1
 	 */
 	public static int myPulibsh(InetSocketAddress LOCALHOST_EPHEMERAL1, String clientId, String topicUrlToPublish, ArrayList<String> aryList_str_jsonTmp) {
         //

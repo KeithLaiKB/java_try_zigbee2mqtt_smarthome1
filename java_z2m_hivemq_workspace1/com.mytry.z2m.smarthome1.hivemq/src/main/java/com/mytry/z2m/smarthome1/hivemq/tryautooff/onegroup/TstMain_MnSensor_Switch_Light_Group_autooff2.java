@@ -270,7 +270,7 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2 {
                         	// 而我们一开始收到的信息可能就是 Motion sensor, 此时正在处于 这个第一次 占用了callback的执行, 
                         	// 因为他们 共同使用同一个 callback
                         	// 所以其他subscription 是暂时无法处理 当前这个 callback的
-                        	if(switchTrancResultTemp == 0 || light_switchTrancResultTemp1 == 0) {
+                        	if(switchTrancResultTemp <= 0 || light_switchTrancResultTemp1 <= 0) {
                         		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
                         		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
                         	}                   	

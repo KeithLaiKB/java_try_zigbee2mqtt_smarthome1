@@ -45,7 +45,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Controller{
 	
 
 
-	private static Sonoff31Lite_PhilipsHueGo2_Group1_Controller instance;
+	private static  volatile Sonoff31Lite_PhilipsHueGo2_Group1_Controller instance;
 	    
 
 	//Thread Safe Singleton

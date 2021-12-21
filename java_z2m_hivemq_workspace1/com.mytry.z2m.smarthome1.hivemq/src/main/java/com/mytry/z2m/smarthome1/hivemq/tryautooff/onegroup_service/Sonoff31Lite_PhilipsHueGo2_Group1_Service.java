@@ -46,7 +46,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
 	
 
 
-	private static Sonoff31Lite_PhilipsHueGo2_Group1_Service instance;
+	private static  volatile Sonoff31Lite_PhilipsHueGo2_Group1_Service instance;
 	    
 
 	//Thread Safe Singleton
@@ -150,7 +150,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
             			group_inner_switch_result = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("ON", philipsHueGo2EntityTmp);
             		}
             		
-            		if(group_inner_switch_result==0){
+            		if(group_inner_switch_result<=0){
             			runResultTmp = Boolean.valueOf(false);
             		}
             	}

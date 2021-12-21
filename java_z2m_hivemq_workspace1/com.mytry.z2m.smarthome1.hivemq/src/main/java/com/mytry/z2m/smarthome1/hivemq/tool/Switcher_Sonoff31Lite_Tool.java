@@ -28,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
 import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
@@ -66,35 +67,31 @@ public class Switcher_Sonoff31Lite_Tool {
     }
 	*/
 	
-	
 	/**
 	 * 
 	 * @param mySwitchToState: "ON","OFF"    要转换成为的状态
 	 * @return -1 代表 有问题, 0 代表 任务完成失败, 因为 网络慢等其他小问题 需要重新再发送请求  	1代表成功
 	 */
-	public int mySwitchTransaction(String mySwitchToState, SonoffS31LiteEntity sonoffS31LiteEntity1)  {
-	    //String topic        = "MQTT Examples";
+	public EnumDeviceTrancLogicResult mySwitchTransactionLogic(String mySwitchToState, SonoffS31LiteEntity sonoffS31LiteEntity1)  {
 		//
 		//
 		//
 	    if(sonoffS31LiteEntity1 == null) {
 	    	System.err.println("entity is null");
-	    	return -1;
+	    	return EnumDeviceTrancLogicResult.DEVICE_NULL;
 	    }
-
-    	//
-		//
-		//
 		//
     	//--------------------------
     	// 判断当前状态
-    	int publishResultTemp = -1;
+	    EnumDeviceTrancLogicResult trancLogicResultTemp = null;
     	//
 
     	// 然后取出 当前 main中的subscriber的状态
     	String switchStateTmp = sonoffS31LiteEntity1.getState();
     	//
     	//---------------------------------------------------------------
+    	//
+    	//
     	//
     	//
     	// 如果是null, 就去发送信息, 等待下一次 调用这个方法
@@ -110,36 +107,83 @@ public class Switcher_Sonoff31Lite_Tool {
     	// 每次getState也是从entity中的 attribute 来获得
     	if(switchStateTmp == null){
         	// 先放松一个 请求 去让broker通知 所有的subscriber, 包括 main中的subscriber
-    		System.out.println("mySwitchTransaction"+"switcher null state, try to get switcher status");
-        	//this.sendGetToNotifySubscriberToGetStatus(); 
-    		this.sendGetToNotifySubscriberToGetStatus(sonoffS31LiteEntity1);
+    		System.out.println("mySwitchTransaction"+"hue go 2 light null state, try to get hue go 2 light status");
+        	//this.sendGetToNotifySubscriberToGetStatus();  
+    		this.sendGetToNotifySubscriberToGetStatus(sonoffS31LiteEntity1);  
         	//
-        	publishResultTemp = 0;
+        	//publishResultTemp = 0;
+    		trancLogicResultTemp = EnumDeviceTrancLogicResult.DEVICE_NULL;
     	}
     	//if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
     	else if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
     		// 如果 当前状态 和 想要改变成的状态 一直, 则无需改变
     		if(switchStateTmp.equals(mySwitchToState)==true) {
-    			System.err.println("mySwitchTransaction"+"switcher same state");
+    			System.err.println("mySwitchTransaction"+"hue go 2 light same state");
     			// do nothing
-    			publishResultTemp = 1;
+    			//publishResultTemp = 1;
+    			trancLogicResultTemp = EnumDeviceTrancLogicResult.NoNeedToChange;
     		}
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
-    			System.err.println("mySwitchTransaction"+"switcher different state, changing");
+    			System.err.println("mySwitchTransaction"+"hue go 2 light different state, changing");
     			//publishResultTemp = this.mySwitch(mySwitchToState);
     			//
     			//
-    			//publishResultTemp = this.publish(sonoffS31LiteEntity1.getTopicUrl_set(),mySwitchToState);
-    			publishResultTemp = publish(brokerIpAddress1, sonoffS31LiteEntity1.getTopicUrl_set() , mySwitchToState);
+    			//publishResultTemp = publish(philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
+    			//publishResultTemp = publish(brokerIpAddress1, philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
+    			trancLogicResultTemp = EnumDeviceTrancLogicResult.NeedToChange;
     		}
     	}
     	else {
-    		System.err.println(this.getClass().getName() +":mySwitchTransaction"+" something wrong");
-    		publishResultTemp = -1;
+    		System.err.println(this.getClass().getName() +":mySwitchTransactionLogic"+" something wrong");
+    		trancLogicResultTemp = EnumDeviceTrancLogicResult.SOMETHING_WRONG;
     	}
 
-    	return publishResultTemp;
+    	//return publishResultTemp;
+    	return trancLogicResultTemp;
+    }
+	
+	
+	/**
+	 * 
+	 * 0 是 默认值, -1 是 各种原因导致的失败, 
+	 * 1 是不需要去改变状态，因为当前的设备状态 已经是 要改变的状态
+	 * 2 是改变状态成功 
+	 * 
+	 */
+	public int mySwitchTransaction(String mySwitchToState, SonoffS31LiteEntity sonoffS31LiteEntity1)  {
+		//
+		//
+		int trancResultTemp = 0;
+		int publishResultTmp = 0;
+		
+		EnumDeviceTrancLogicResult trancLogicResultTemp = mySwitchTransactionLogic(mySwitchToState, sonoffS31LiteEntity1); 
+		if(trancLogicResultTemp == null) {
+			System.out.println(this.getClass().getName().toString()+"/mySwitchTransaction"+ "something is wrong");
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.SOMETHING_WRONG)) {
+			System.out.println(this.getClass().getName().toString()+"/mySwitchTransaction"+ "something is wrong when this method calling mySwitchTransactionLogic");
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.DEVICE_NULL)) {
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.NoNeedToChange)) {
+			trancResultTemp = 1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.NeedToChange)) {
+			publishResultTmp = publish(brokerIpAddress1, sonoffS31LiteEntity1.getTopicUrl_set() , mySwitchToState);
+			if(publishResultTmp == 1) {
+				trancResultTemp = 2;
+			}
+			else {
+				// 
+				trancResultTemp = -1;
+			}
+		}
+		
+    	return trancResultTemp;
     }
 
 	

@@ -14,22 +14,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hivemq.client.internal.mqtt.MqttRxClient;
-import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
+
 
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
+
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Call.Ex;
+
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
+
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
-import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
+
 import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
  * 
@@ -73,18 +69,18 @@ public class Light_Philips_Hue_GO2_Tool {
 	 * @param mySwitchToState: "ON","OFF"    要转换成为的状态
 	 * @return -1 代表 有问题, 0 代表 任务完成失败, 因为 网络慢等其他小问题 需要重新再发送请求  	1代表成功
 	 */
-	public int mySwitchTransaction(String mySwitchToState, PhilipsHueGo2Entity philipsHueGo2Entity1)  {
+	public EnumDeviceTrancLogicResult mySwitchTransactionLogic(String mySwitchToState, PhilipsHueGo2Entity philipsHueGo2Entity1)  {
 		//
 		//
 		//
 	    if(philipsHueGo2Entity1 == null) {
 	    	System.err.println("entity is null");
-	    	return -1;
+	    	return EnumDeviceTrancLogicResult.DEVICE_NULL;
 	    }
 		//
     	//--------------------------
     	// 判断当前状态
-    	int publishResultTemp = -1;
+	    EnumDeviceTrancLogicResult trancLogicResultTemp = null;
     	//
 
     	// 然后取出 当前 main中的subscriber的状态
@@ -112,7 +108,8 @@ public class Light_Philips_Hue_GO2_Tool {
         	//this.sendGetToNotifySubscriberToGetStatus();  
     		this.sendGetToNotifySubscriberToGetStatus(philipsHueGo2Entity1);  
         	//
-        	publishResultTemp = 0;
+        	//publishResultTemp = 0;
+    		trancLogicResultTemp = EnumDeviceTrancLogicResult.DEVICE_NULL;
     	}
     	//if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
     	else if(switchStateTmp!=null &&(switchStateTmp.equals("ON")==true || switchStateTmp.equals("OFF")==true) ) {
@@ -120,7 +117,8 @@ public class Light_Philips_Hue_GO2_Tool {
     		if(switchStateTmp.equals(mySwitchToState)==true) {
     			System.err.println("mySwitchTransaction"+"hue go 2 light same state");
     			// do nothing
-    			publishResultTemp = 1;
+    			//publishResultTemp = 1;
+    			trancLogicResultTemp = EnumDeviceTrancLogicResult.NoNeedToChange;
     		}
     		// 如果 当前状态 和 想要改变成的状态 一直, 则  需改变
     		else if(switchStateTmp.equals(mySwitchToState)==false) {
@@ -129,17 +127,69 @@ public class Light_Philips_Hue_GO2_Tool {
     			//
     			//
     			//publishResultTemp = publish(philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
-    			publishResultTemp = publish(brokerIpAddress1, philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
-    			
+    			//publishResultTemp = publish(brokerIpAddress1, philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
+    			trancLogicResultTemp = EnumDeviceTrancLogicResult.NeedToChange;
     		}
     	}
     	else {
-    		System.err.println(this.getClass().getName() +":mySwitchTransaction"+" something wrong");
-    		publishResultTemp = -1;
+    		System.err.println(this.getClass().getName() +":mySwitchTransactionLogic"+" something wrong");
+    		trancLogicResultTemp = EnumDeviceTrancLogicResult.SOMETHING_WRONG;
     	}
 
-    	return publishResultTemp;
+    	//return publishResultTemp;
+    	return trancLogicResultTemp;
     }
+	
+	
+	/**
+	 * 
+	 * 0 是 默认值, -1 是 各种原因导致的失败, 
+	 * 1 是不需要去改变状态，因为当前的设备状态 已经是 要改变的状态
+	 * 2 是改变状态成功 
+	 * 
+	 * @param mySwitchToState
+	 * @param philipsHueGo2Entity1
+	 * @return
+	 */
+	public int mySwitchTransaction(String mySwitchToState, PhilipsHueGo2Entity philipsHueGo2Entity1)  {
+		//
+		//
+		int trancResultTemp = 0;
+		int publishResultTmp = 0;
+		
+		EnumDeviceTrancLogicResult trancLogicResultTemp = mySwitchTransactionLogic(mySwitchToState, philipsHueGo2Entity1); 
+		if(trancLogicResultTemp == null) {
+			System.out.println(this.getClass().getName().toString()+"/mySwitchTransaction"+ "something is wrong");
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.SOMETHING_WRONG)) {
+			System.out.println(this.getClass().getName().toString()+"/mySwitchTransaction"+ "something is wrong when this method calling mySwitchTransactionLogic");
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.DEVICE_NULL)) {
+			trancResultTemp = -1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.NoNeedToChange)) {
+			trancResultTemp = 1;
+		}
+		else if (trancLogicResultTemp.equals(EnumDeviceTrancLogicResult.NeedToChange)) {
+			publishResultTmp = publish(brokerIpAddress1, philipsHueGo2Entity1.getTopicUrl_set() , mySwitchToState);
+			if(publishResultTmp == 1) {
+				trancResultTemp = 2;
+			}
+			else {
+				// 
+				trancResultTemp = -1;
+			}
+		}
+		
+    	return trancResultTemp;
+    }
+	
+	
+	
+	
+	
 
 	
 	/**
@@ -148,7 +198,7 @@ public class Light_Philips_Hue_GO2_Tool {
 	 * @param brokerIpAddress
 	 * @param topicUrlToPublish
 	 * @param mySwitchState
-	 * @return
+	 * @return 成功返回1
 	 */
 	public int publish(String brokerIpAddress, String topicUrlToPublish , String mySwitchState)  {
 		

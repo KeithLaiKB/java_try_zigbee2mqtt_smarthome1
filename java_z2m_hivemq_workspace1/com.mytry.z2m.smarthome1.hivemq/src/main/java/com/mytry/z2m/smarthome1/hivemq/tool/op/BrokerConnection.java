@@ -1,6 +1,7 @@
 package com.mytry.z2m.smarthome1.hivemq.tool.op;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,12 @@ public class BrokerConnection implements IBrokerConnection{
 
 	//String brokerIpAddress1 = "192.168.50.179";
 
+	private String myUuid1 = null;
+	
+
+
+
+
 	//private BrokerConnection connect;
 	//false--繁忙，true--空闲
 	private EnumBrokerConnectionStatus status;
@@ -24,15 +31,35 @@ public class BrokerConnection implements IBrokerConnection{
 	//
 	//
 	public BrokerConnection() {
+		this.myUuid1 = UUID.randomUUID().toString().replaceAll("-","");
 	}
 	
 	public BrokerConnection(EnumBrokerConnectionStatus status, String brokerIpAddress1, int brokerPort, String clientId) {
+		this.myUuid1 = UUID.randomUUID().toString().replaceAll("-","");
+		//
 		this.myInit(brokerIpAddress1, brokerPort, clientId);
 		this.status = status;
 	}
 	
 	//
 	//
+	//
+	// -------------------------------------------------------------------
+	public void setMyUuid1(String myUuid1) {
+		this.myUuid1 = myUuid1;
+	}
+	public String getMyUuid1() {
+		return myUuid1;
+	}
+	//
+	public EnumBrokerConnectionStatus getStatus() {
+		return status;
+	}
+	public void setStatus(EnumBrokerConnectionStatus status) {
+		this.status = status;
+	}
+	//
+	// -------------------------------------------------------------------
 	//
 	public String getClient1Identifier() {
 		return this.client1.getConfig().getClientIdentifier().get().toString();
@@ -55,50 +82,20 @@ public class BrokerConnection implements IBrokerConnection{
 		return this.client1.getConfig().getServerPort();
 	}
 	
-	
 	//
-	public EnumBrokerConnectionStatus getStatus() {
-		return status;
-	}
-	public void setStatus(EnumBrokerConnectionStatus status) {
-		this.status = status;
-	}
-	
-	//释放连接池中的连接对象
-	@Override
-	public void myReleaseConnect(){
-		System.out.println("-----------释放连接-----------");
-		
-		
-		this.client1.disconnect();
-		
-		//wait
-    	try {
-    		Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
-	
-    	// 清空 client1 和 那个外部可使用的send
-    	this.client1 = null;
-    	this.publishBuilder_send1 = null;
-    	
-    	this.status = EnumBrokerConnectionStatus.RELEASED;
-	}
-	
-	
-	
-	
+
+	//
+	//
+	//
+	//
+	//
 	
 	private void myInit(String brokerIpAddress1, int brokerPort, String clientId) {
 		final InetSocketAddress LOCALHOST_EPHEMERAL1 = new InetSocketAddress(brokerIpAddress1,brokerPort);
         this.client1 = Mqtt5Client.builder().serverAddress(LOCALHOST_EPHEMERAL1).identifier(clientId).buildAsync();
 	}
-	
-	
+	//
+
 	
 	//释放连接池中的连接对象
 	@Override
@@ -138,7 +135,38 @@ public class BrokerConnection implements IBrokerConnection{
         // 不返回 client1 的原因是, 防止外部对client此进行串改
         // return client1;
 		return this.publishBuilder_send1;
-
 	}
+	//
+	
+	
+	
+	//释放连接池中的连接对象
+	@Override
+	public void myReleaseConnect(){
+		System.out.println("-----------释放连接-----------");
+		
+		
+		this.client1.disconnect();
+		
+		//wait
+    	try {
+    		Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+	
+    	// 清空 client1 和 那个外部可使用的send
+    	this.client1 = null;
+    	this.publishBuilder_send1 = null;
+    	
+    	this.status = EnumBrokerConnectionStatus.RELEASED;
+	}
+	
+	
+	
+	
 	
 }

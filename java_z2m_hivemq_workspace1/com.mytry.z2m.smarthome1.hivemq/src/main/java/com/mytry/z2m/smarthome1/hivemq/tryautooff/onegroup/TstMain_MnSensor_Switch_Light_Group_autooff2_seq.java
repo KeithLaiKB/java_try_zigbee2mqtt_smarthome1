@@ -292,7 +292,7 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
                         			group_inner_switch_result = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("ON", philipsHueGo2Entity1);
                         		}
                         		
-                        		if(group_inner_switch_result==0){
+                        		if(group_inner_switch_result<=0){
                         			runResultTmp = Boolean.valueOf(false);
                         		}
                         	}

@@ -3,13 +3,7 @@ package com.mytry.z2m.smarthome1.hivemq.tool.op;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
-import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 
 public class BrokerConnectionPool {
 
@@ -34,7 +28,38 @@ public class BrokerConnectionPool {
 	
 	private BrokerConnectionPool(){}
 
-	private static BrokerConnectionPool instance;
+	
+	/**
+	 * 和C的volatile不太一样,
+	 * java 的volatile是为了
+	 * 防止指令重排
+	 * 指的是instance = new Singleton()，我们感觉是一步操作的实例化对象，实际上对于JVM指令，是分为三步的：
+	 * 1. 分配内存空间
+	 * 2. 初始化对象
+	 * 3. 将对象指向刚分配的内存空间
+	 * 
+	 * 有些但是 编译器为为了性能优化，
+	 * 可能会把第二步和第三步进行重排序，
+	 * 顺序就成了：
+	 * 1. 分配内存空间
+	 * 2. 将对象指向刚分配的内存空间
+	 * 3. 初始化对象
+	 * 
+	 * 也就是说 如果重排成 这个顺序, 当进行 double check lock这个方式的时候
+	 * 当线程一 运行到	2. 将对象指向刚分配的内存空间, 此时 
+	 * 		3. 初始化对象  并没有执行, 
+	 * 			也就是说 空间有了,对象还没创建完成 
+	 * 但是 当线程二 进行判断   instance != null
+	 * 		然后 return instance 的时候
+	 * 		注意 这个 instance 此时 是并没有 对象的, 因为此时 对象还没有创建完成
+	 * 如果此时线程二 继续马上做这个instance的操作  的话是会出问题的, 因为 对象还没有创建完成 
+	 * 	ref：https://www.zhihu.com/question/485984234/answer/2245819035
+	 * 
+	 * 
+	 * 
+	 */
+	
+	private static volatile BrokerConnectionPool instance;
 	    
 
 	//Thread Safe Singleton
@@ -72,12 +97,13 @@ public class BrokerConnectionPool {
 	//创建数据库连接
 	private int addConnection(String brokerIpAddress1, int brokerPort, String clientId) {
 		// 判断 当前已有的size  加上    我要加的size 是否超过 maxSize
-		if(arylist_brokerConnection.size() + 1 <= maxSize){
+		if(initSize + arylist_brokerConnection.size() + 1 <= maxSize){
 			//
 			System.out.println("初始化了"+  1 +"个连接");	
 				
 			BrokerConnection broCon = new BrokerConnection(EnumBrokerConnectionStatus.RELEASED, brokerIpAddress1, brokerPort, clientId);
-					
+			//
+			// 往池子里 添加元素
 			boolean resultTmp = arylist_brokerConnection.add(broCon);
 			if(resultTmp==true) {
 				return 1;
@@ -87,7 +113,7 @@ public class BrokerConnectionPool {
 				return -1;
 			}
 		}
-		System.out.println("connection num in connection pool is full, couldn't add more conection");
+		System.err.println("connection num in connection pool is full, couldn't add more conection");
 		return -1;
 	}
 	
@@ -110,6 +136,7 @@ public class BrokerConnectionPool {
 		return null;
 	}
 	
+	/*
 	public IBrokerConnection getAvailableIConnection() {
 		IBrokerConnection iBroCon= null;
 		
@@ -123,7 +150,7 @@ public class BrokerConnectionPool {
 
 		return null;
 	}
-	
+	*/
 	
 	
 	
@@ -132,13 +159,14 @@ public class BrokerConnectionPool {
 		
 		for(int i =0;i<=arylist_brokerConnection.size()-1; i++ ){
 			BrokerConnection broCon = arylist_brokerConnection.get(i);
+			// 如果这个 连接对象 可用
 			if(broCon.getStatus().equals(EnumBrokerConnectionStatus.RELEASED)==true){
+				// 如果 这个 连接的 IP 和 port 相同
 				if(brokerIpAddress.equals(broCon.getBrokerIpAddress())==true && brokerPort==broCon.getBrokerPort()) {
+					// 如果 这个 连接的 client 相同 
 					if(clientId.equals(broCon.getClient1Identifier())==true) {
-						
 						iBroCon = (IBrokerConnection) broCon;
 						return iBroCon;
-						
 					}
 				}
 			}
@@ -149,8 +177,10 @@ public class BrokerConnectionPool {
 	
 	public IBrokerConnection getAvailableIBrokerConnectionByBrokerIpAddressAndBrokerPortAndClientIdToUse(String brokerIpAddress, int brokerPort, String clientId) {
 		IBrokerConnection iBrokerConnection = this.getAvailableIBrokerConnectionByBrokerIpAddressAndBrokerPortAndClientId(brokerIpAddress, brokerPort, clientId);
+		// 没有 找到 制定参数的 连接对象, 则自己创造一个 
 		if(iBrokerConnection == null) {
 			this.addConnection(brokerIpAddress, brokerPort, clientId);
+			System.out.println("add connection:"+brokerIpAddress+":"+brokerPort+", clientId is:"+clientId);
 		}
 		return iBrokerConnection;
 	}

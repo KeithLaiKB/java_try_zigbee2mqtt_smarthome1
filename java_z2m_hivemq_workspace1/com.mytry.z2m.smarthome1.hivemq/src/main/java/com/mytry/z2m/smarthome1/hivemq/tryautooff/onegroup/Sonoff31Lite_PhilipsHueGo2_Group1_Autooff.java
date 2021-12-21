@@ -145,7 +145,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Autooff implements Runnable{
 	                	int act_PhilipsHueGO2_ResultTmp1 = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("OFF", this.getPhilipsHueGo2Entity1());
 	                	//
 	                	// 同时判断
-	                	if(act_Sonoff31Lite_ResultTmp1==1 && act_PhilipsHueGO2_ResultTmp1==1) {
+	                	if(act_Sonoff31Lite_ResultTmp1>=1 && act_PhilipsHueGO2_ResultTmp1>=1) {
 		                	//关灯以后
 		                	//此时灯已经关闭了, 所以暂时不需要再去 记录 和 计算 occupance_noone_starttime
 		                	occupance_noone_starttime =-1L;
