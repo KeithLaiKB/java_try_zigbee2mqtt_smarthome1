@@ -24,16 +24,16 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.philipshueoutdoormotionsensor.mydto.PhilipsHueOutdoorMotionSensorDto;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.service.ISonoff31Lite_PhilipsHueGo2_Group1_Service;
-import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
-import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
-import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
-import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.tool.EnumDeviceTrancLogicResult;
-import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
-import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueGo2Entity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueMotionOutdoorSensorEntity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.EnumDeviceTrancLogicResult;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Light_Philips_Hue_GO2_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Switcher_Sonoff31Lite_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.op.BrokerConnectionPool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.op.MyPublishTool;
 /**
  * 
  * 

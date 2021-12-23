@@ -21,16 +21,16 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Call.Ex;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
-import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
-import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
-import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service.ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service.Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service.TstMain_MnSensor_Switch_Light_Group_Request;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueGo2Entity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueMotionOutdoorSensorEntity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Light_Philips_Hue_GO2_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Switcher_Sonoff31Lite_Tool;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.TstMain_MnSensor_Switch_Light_Group_Request;
 
 
 

@@ -1,15 +1,10 @@
-package com.mytry.z2m.smarthome1.hivemq.ddddesign;
+package com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,11 +23,8 @@ import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.SonoffS31LiteEntity
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Light_Philips_Hue_GO2_Tool;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.TstMain_MnSensor_Switch_Light_Group_Request;
-
-
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.simplescen.Switcher_Sonoff31Lite_Autooff;
+import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.simplescen.withhuego2.Light_PhilipsHueGo2_Autooff;
 
 /**
  * 
@@ -53,27 +45,10 @@ import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_servic
  * 
  * 暂时只控制 开的顺序, 管的顺序 可以在auto off 里面跟这里一样设置就好了
  * 
- * 
- * 
- * 
- * 
- * ++++++++++++++
- * entry->发送-> 创建一个request线程 -> 使用单例的Controller ->使用单例的Service
- * 
- * 因为entry 我们用的是callback, 如果 在callback里 直接 调用 某些不创建进程的普通方法,
- * 并且如果 这个方法用了sleep之类睡眠 整个进程的操作, 我们的callback 也是会受到影响的, 
- * 当此时这次的callback 完成之后 才能继续 接收 第二次 的subscription 从而进行 callback的 第二次操作
- * 也就是说 我们的callback 会因为这个sleep 无法按时接收到 第二个subscription, 
- 
- * 
- * 
- * 
- * 
- * 
  * @author laipl
  *
  */
-public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
+public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq {
 
 
 	
@@ -101,12 +76,9 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         //
         //
         
-        Runnable rnb_tryAutoOff1 =new Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv();
+        Runnable rnb_tryAutoOff1 =new Sonoff31Lite_PhilipsHueGo2_Group1_Autooff();
         Thread trd_tryAutoOff1 =new Thread(rnb_tryAutoOff1);
         trd_tryAutoOff1.start();
-        
-        ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv interfaceTryAutoOff1 =(ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv) rnb_tryAutoOff1;
-        
         
         //
         //
@@ -213,19 +185,10 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         //
         //
         // 把这个放到 那个线程 当中, 这样 这里变, Switcher_AutoOff3里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
-        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
+        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setSonoffS31LiteEntity1(sonoffS31LiteEntity1);
         //
         // 把这个放到 那个线程 当中, 这样 这里变, 里的那个对象也会跟着变, 因为他们的引用关系, 具体怎么引用自己查
-        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv)rnb_tryAutoOff1).setPhilipsHueGo2Entity1(philipsHueGo2Entity1);
-        //
-        //
-        // 因为 这个 调用的是 下面这种 Integer.MAX_VALUE, 所以他一下纸会创建很多, 
-        // 所以其实 我们可以直接用 ThreadPoolExecutor 自己去指定 最大数
-        // ExecutorService CachedThreadPool1 = Executors.newCachedThreadPool();
-        // ThreadPoolExecutor CachedThreadPool1 = new ThreadPoolExecutor(0, Integer.MAX_VALUE,60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-        //															0个核心	1000个非核心			60L单位的 生存时间, 生存时间单位 是秒,  用 SynchronousQueue	
-        ThreadPoolExecutor cachedThreadPool1 = new ThreadPoolExecutor(0, Integer.valueOf(1000),60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-        //
+        ((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setPhilipsHueGo2Entity1(philipsHueGo2Entity1);
         //
         //
         c1.callback(publish -> 
@@ -238,14 +201,126 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         			plipMotionSensorEntity1.setAttributeFromJson(jsonRsTmp);
         			System.out.println("phisssenentity:"+plipMotionSensorEntity1.toString());
         			
-        			/*
-        	        Runnable rnb_reqGroupTmp =new TstMain_MnSensor_Switch_Light_Group_Request(plipMotionSensorEntity1, interfaceTryAutoOff1, myDeviceGroup1);
-        	        Thread trd_reqGroupTmp =new Thread(rnb_reqGroupTmp);
-        	        trd_reqGroupTmp.start();
-        			*/
-        			Runnable rnb_reqGroupTmp =new TstMain_MnSensor_Switch_Light_Group_Request(plipMotionSensorEntity1, interfaceTryAutoOff1, myDeviceGroup1);
-        			cachedThreadPool1.execute(rnb_reqGroupTmp);
         			
+        			Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp			= new Switcher_Sonoff31Lite_Tool();
+        			Light_Philips_Hue_GO2_Tool			light_Philips_Hue_GO2_ToolTmp			= new Light_Philips_Hue_GO2_Tool();
+        			MotionSensor_Philips_Hue_Outdoor_Tool 	motionsensor_PhilipHueOutdoorToolTmp= new MotionSensor_Philips_Hue_Outdoor_Tool();
+        			// 注意一下!!!!!!!
+            		//
+            		//
+            		//场景一, publisher 那边   没有    设置retain
+            		//	程序启动前
+            		// 		1.我的手尝试运动
+            		//			场景很暗(illuminance_lux < 150)
+            		//			 	publisher 发送信息( 因为 没有 设置retain, 这条消息 不会 被保留 ) 
+            		//	启动程序后
+            		//  	1.subscriber 无法    接收到消息
+            		//		2.我的手尝试运动
+            		//			场景很暗(illuminance_lux < 150)
+            		//				publisher 发送信息
+            		//				subscriber 接收到消息
+            		//
+            		//场景二, publisher 那边    有    设置retain
+            		//	程序启动后
+            		// 		1.我的手尝试运动
+            		//			场景很暗(illuminance_lux < 150)
+            		//			 	publisher 发送信息( 因为 有   设置retain, 这条消息    会   被保留 )  
+            		//	启动程序
+            		//  	1.subscriber 接收到消息
+            		//
+            		// 结论 可以看出retain带来的不同的结果
+            		// 	场景一, 坐在电脑前动	->	不动一段混时间	->	我坐在电脑前, 不动, 悄悄手指点击启动程序
+            		//		灯是没有办法开的
+            		//						然后需要再手动一下	->	灯才打开 
+            		//
+            		// 	场景一, 坐在电脑前动	->	不动一段混时间	->	我坐在电脑前, 不动, 悄悄手指点击启动程序
+            		//		灯是没有办法开的
+            		//------------------------------------------------
+            		//
+            		// 因为 pulisher 发布过了一次消息 后没有保存信息的
+            		// 所以 我们直接 subscribe, 最初始的时候 是没有信息的
+                	// 例如启动这个程序前  运动触发了 监测现在 确实灯很暗, 但是 这个很暗的信息 是没有保存的
+            		// 所以我们subscribe 是接收不到内容的, 因为我们没有运动
+   	
+                	System.out.println("received message: " + publish + "////"+ new String(publish.getPayloadAsBytes()));
+                	System.out.println("received message content(illuminance_lux): " + plipMotionSensorEntity1.getIlluminance_lux());
+                	
+                	Integer illuminance_luxTmp =  plipMotionSensorEntity1.getIlluminance_lux();
+            	
+                	//------------------------------------------------------------------------------
+                	if(plipMotionSensorEntity1.getOccupancy().equals(true)){
+                		// 告诉负责 Sonoff31Lite  和 philips hue go 2的autooff类, 此时 是有人的, 不用开始计算 无人在房间内的时间
+                		((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(1);
+                				
+                		if(illuminance_luxTmp.compareTo(150)<=0) {
+                    		System.out.println("it is too dark, i try to switch on the plug");
+                        	try {
+                        		Thread.sleep(200);
+                    		} catch (InterruptedException e) {
+                    			// TODO Auto-generated catch block
+                    			e.printStackTrace();
+                    		}
+
+                        	
+                        	
+                        	/*
+                        	//开灯, 传当前 的 开关 状态过去, 因为事务需要判断 要转变成的状态 和 当前状态, 来进行调整
+                        	// 例如 现在很暗, 但是已经开了 就不开灯了
+                        	int switchTrancResultTemp = switcher_Sonoff31LiteToolTmp.mySwitchTransaction("ON", sonoffS31LiteEntity1);
+                        	int light_switchTrancResultTemp1 = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("ON", philipsHueGo2Entity1);
+                        	//
+                        	// 如果其中有一个或以上 没成功, 则进行重新再申请一次 感应器的状态,
+                        	// 因为 可能 没成功的 是因为 最开始运行时, 那些状态 还是null, 而我们一开始收到的信息可能就是 Motion sensor
+                        	// 此时第一次 占用了callback的执行, 所以其他subscription 是暂时无法处理 callback的
+                        	if(switchTrancResultTemp == 0 || light_switchTrancResultTemp1 == 0) {
+                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        	}    
+                        	*/
+                        	  
+                        	// 以小组为单位 内 , (如无意外)进行按顺序打开, 如果有一个因为网络堵塞之类的原因, 则这个可以不予以处理, 进行跳过, 
+                        	// 所以这里我不会 因为 一发现 不成功 就break掉这个循环
+                    		// 开灯, 传当前 的 开关 状态过去, 因为事务需要判断 要转变成的状态 和 当前状态, 来进行调整
+                        	// 例如 现在很暗, 但是已经开了 就不开灯了
+                        	Boolean runResultTmp = null;
+                        	for(int groupTmp1=0; groupTmp1 <= myDeviceGroup1.size()-1; groupTmp1++) {   
+                            	int group_inner_switch_result = 0;
+                            	//
+                        		if(myDeviceGroup1.get(groupTmp1).getClass().getName().equals(SonoffS31LiteEntity.class.getName())==true) {
+                        			group_inner_switch_result = switcher_Sonoff31LiteToolTmp.mySwitchTransaction("ON", sonoffS31LiteEntity1);
+                        		}
+                        		else if(myDeviceGroup1.get(groupTmp1).getClass().getName().equals(PhilipsHueGo2Entity.class.getName())==true) {
+                        			group_inner_switch_result = light_Philips_Hue_GO2_ToolTmp.mySwitchTransaction("ON", philipsHueGo2Entity1);
+                        		}
+                        		
+                        		if(group_inner_switch_result<=0){
+                        			runResultTmp = Boolean.valueOf(false);
+                        		}
+                        	}
+                        	//
+                        	// 注意!!!!!!
+                        	// 如果其中有一个或以上 没成功, 则进行重新再申请一次 感应器的状态,
+                        	// 因为 可能 没成功  是因为 最开始运行时, 那些状态 还是null 
+                        	// 而我们一开始收到的信息可能就是 Motion sensor, 此时正在处于 这个第一次 占用了callback的执行, 
+                        	// 因为他们 共同使用同一个 callback
+                        	// 所以其他subscription 是暂时无法处理 当前这个 callback的
+                        	if(runResultTmp!=null && runResultTmp.equals(false)==true) {
+                        		//motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus();
+                        		motionsensor_PhilipHueOutdoorToolTmp.sendGetToNotifySubscriberToGetStatus(plipMotionSensorEntity1);
+                        	}
+                        	
+                        	//
+                        	
+                    	}
+                	}
+                	// 如果当前 感应器表示 没有人了
+                	else if(plipMotionSensorEntity1.getOccupancy().equals(false)){
+                		
+                		System.out.println("occupancy is false now");
+                		//
+                		// Switcher_AutoOff3  这个线程  他自己会根据我们改的值定期检查, 然后进行操作
+                		// 例如 20s 没人就关灯
+                		((Sonoff31Lite_PhilipsHueGo2_Group1_Autooff)rnb_tryAutoOff1).setMyrecorded_occupancy(0);
+                	}
         			
         		}
         		// 如果当前 获得的信息是 开关信息

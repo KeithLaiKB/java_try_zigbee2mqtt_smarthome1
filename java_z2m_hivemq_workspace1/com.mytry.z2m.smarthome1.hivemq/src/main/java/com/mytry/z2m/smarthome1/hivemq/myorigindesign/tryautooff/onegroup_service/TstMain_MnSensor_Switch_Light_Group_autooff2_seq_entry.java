@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.ddddesign;
+package com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -28,9 +28,6 @@ import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.SonoffS31LiteEntity
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Light_Philips_Hue_GO2_Tool;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.Sonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.TstMain_MnSensor_Switch_Light_Group_Request;
 
 
 
