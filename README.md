@@ -1,5 +1,8 @@
 # java_try_zigbee2mqtt_smarthome1
 
+I tried diffrent design
+
+now I tried domain-driven design
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_sendMessage_Main_0.jpg)
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_subscribeMessage_Main_2.jpg)
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_readMessage_Main_3.jpg)
