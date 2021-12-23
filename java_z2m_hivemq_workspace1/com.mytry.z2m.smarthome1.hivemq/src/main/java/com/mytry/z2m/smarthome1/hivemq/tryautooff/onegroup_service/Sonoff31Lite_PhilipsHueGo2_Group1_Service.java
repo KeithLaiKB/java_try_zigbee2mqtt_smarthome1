@@ -1,27 +1,10 @@
 package com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service;
 
-import java.net.InetSocketAddress;
+
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hivemq.client.internal.mqtt.MqttRxClient;
-import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 
-import com.hivemq.client.mqtt.datatypes.MqttQos;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+
 import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
@@ -30,7 +13,6 @@ import com.mytry.z2m.smarthome1.hivemq.tool.EnumDeviceTrancLogicResult;
 import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
 import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
  * 
@@ -57,7 +39,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
 	//ref: https://en.wikipedia.org/wiki/Double-checked_locking
 	public static Sonoff31Lite_PhilipsHueGo2_Group1_Service getInstanceUsingDoubleCheckLocking(){
 	    if(instance == null){
-	        synchronized (BrokerConnectionPool.class) {
+	        synchronized (Sonoff31Lite_PhilipsHueGo2_Group1_Service.class) {
 	            if(instance == null){
 	                instance = new Sonoff31Lite_PhilipsHueGo2_Group1_Service();
 	            }
@@ -70,7 +52,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
 	public int myOpen(PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity, ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv interfaceTryAutoOff1,ArrayList<AbstractSmartDeivce> myDeviceGroup){
 		// 设置每个设备打开之间的间隔, 当然你设置成0也可以
 		// 设置一定的长时间的间隔, 可以呈现比较好看的 按顺序开灯的效果
-		long timeGapEachDeviceTmp = 200L;
+		long timeGapEachDeviceTmp = 300L;
 		
 		Switcher_Sonoff31Lite_Tool 			switcher_Sonoff31LiteToolTmp			= new Switcher_Sonoff31Lite_Tool();
 		Light_Philips_Hue_GO2_Tool			light_Philips_Hue_GO2_ToolTmp			= new Light_Philips_Hue_GO2_Tool();
@@ -245,7 +227,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Service{
             	// 则先去执行 那个需要去switch的
             	// 另外一个 不成功的没关系, 后面会处理
             	if(aryList_str_json.size()>0) {
-            		MyPublishTool.myPulibsh(brokerIpAddress1, brokerPort1, clientId1, aryList_topicUrlToPublish, aryList_str_json, timeGapEachDeviceTmp);
+            		MyPublishTool.myPulibshWithConnectionPool(brokerIpAddress1, brokerPort1, clientId1, aryList_topicUrlToPublish, aryList_str_json, timeGapEachDeviceTmp);
             	}
             	//
             	// 注意!!!!!!

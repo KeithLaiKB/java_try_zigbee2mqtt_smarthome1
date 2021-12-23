@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.applicationlayer.controller;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+
 import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
@@ -65,15 +66,7 @@ public class Sonoff31Lite_PhilipsHueGo2_Group1_Controller{
 	
 	
 	
-	
-	Sonoff31Lite_PhilipsHueGo2_Group1_Service sonoff31Lite_PhilipsHueGo2_Group1_Service1 = Sonoff31Lite_PhilipsHueGo2_Group1_Service.getInstanceUsingDoubleCheckLocking();
-	
-	
-	
-	public int myOpen(PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity, ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv interfaceTryAutoOff1,ArrayList<AbstractSmartDeivce> myDeviceGroup){
-		int resultTmp = sonoff31Lite_PhilipsHueGo2_Group1_Service1.myOpen(plipMotionSensorEntity, interfaceTryAutoOff1, myDeviceGroup);
-		return resultTmp;
-	}
+
 	
 	
 	

@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.tryautooff.onegroup_service;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.service.impl;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -22,13 +22,18 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.philipshueoutdoormotionsensor.mydto.PhilipsHueOutdoorMotionSensorDto;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.service.ISonoff31Lite_PhilipsHueGo2_Group1_Service;
 import com.mytry.z2m.smarthome1.hivemq.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.entity.PhilipsHueMotionOutdoorSensorEntity;
 import com.mytry.z2m.smarthome1.hivemq.entity.SonoffS31LiteEntity;
+import com.mytry.z2m.smarthome1.hivemq.tool.EnumDeviceTrancLogicResult;
 import com.mytry.z2m.smarthome1.hivemq.tool.Light_Philips_Hue_GO2_Tool;
+import com.mytry.z2m.smarthome1.hivemq.tool.MotionSensor_Philips_Hue_Outdoor_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.Switcher_Sonoff31Lite_Tool;
 import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
+import com.mytry.z2m.smarthome1.hivemq.tool.op.MyPublishTool;
 /**
  * 
  * 
@@ -36,55 +41,36 @@ import com.mytry.z2m.smarthome1.hivemq.tool.op.BrokerConnectionPool;
  * 							description:																			</br>	
  * &emsp;						use different value to publish message each time 									</br>	
  * 																													</br>
- * 其实我觉得这里的controller可以没有的, 只是 我想模仿, 多个访问 访问 单例的controller, 然后访问单例的 service
+ * 用线程控制 自动关灯
  *
  * @author laipl
  *
  */
-public class Sonoff31Lite_PhilipsHueGo2_Group1_Controller{
+public class PhilipsHueOutdoorMotionSensor_Service implements ISonoff31Lite_PhilipsHueGo2_Group1_Service{
 	
+	String brokerIpAddress1 = "192.168.50.179";
+	int brokerPort1 = 1883;
+	String clientId1 = "IamClient1";
 
-
-	private static  volatile Sonoff31Lite_PhilipsHueGo2_Group1_Controller instance;
+	private static  volatile PhilipsHueOutdoorMotionSensor_Service instance;
 	    
 
 	//Thread Safe Singleton
 	//ref: https://en.wikipedia.org/wiki/Double-checked_locking
-	public static Sonoff31Lite_PhilipsHueGo2_Group1_Controller getInstanceUsingDoubleCheckLocking(){
+	public static PhilipsHueOutdoorMotionSensor_Service getInstanceUsingDoubleCheckLocking(){
 	    if(instance == null){
-	        synchronized (Sonoff31Lite_PhilipsHueGo2_Group1_Controller.class) {
+	        synchronized (BrokerConnectionPool.class) {
 	            if(instance == null){
-	                instance = new Sonoff31Lite_PhilipsHueGo2_Group1_Controller();
+	                instance = new PhilipsHueOutdoorMotionSensor_Service();
 	            }
 	        }
 	    }
 	    return instance;
 	}
-	
-	
-	
-	
-	
-	
-	Sonoff31Lite_PhilipsHueGo2_Group1_Service sonoff31Lite_PhilipsHueGo2_Group1_Service1 = Sonoff31Lite_PhilipsHueGo2_Group1_Service.getInstanceUsingDoubleCheckLocking();
-	
-	
-	
-	public int myOpen(PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity, ISonoff31Lite_PhilipsHueGo2_Group1_Autooff_serv interfaceTryAutoOff1,ArrayList<AbstractSmartDeivce> myDeviceGroup){
-		int resultTmp = sonoff31Lite_PhilipsHueGo2_Group1_Service1.myOpen(plipMotionSensorEntity, interfaceTryAutoOff1, myDeviceGroup);
-		return resultTmp;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
+	public int savePhilipsHueOutdoorMotionSensor(PhilipsHueOutdoorMotionSensorDto philipsHueOutdoorMotionSensor1) {
+		
+		return 1;
+	}
 
 }

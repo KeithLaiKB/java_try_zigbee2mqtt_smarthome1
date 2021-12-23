@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.tool.op;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.db;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
