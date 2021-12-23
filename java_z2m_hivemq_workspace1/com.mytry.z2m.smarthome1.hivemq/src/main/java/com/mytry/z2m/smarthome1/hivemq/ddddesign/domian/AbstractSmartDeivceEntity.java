@@ -1,6 +1,6 @@
 package com.mytry.z2m.smarthome1.hivemq.ddddesign.domian;
 
-public abstract class AbstractSmartDeivce {
+public abstract class AbstractSmartDeivceEntity {
 	private String ieeeAddress = null;
 	private String topicUrl = null;
 	private String topicUrl_get = null;

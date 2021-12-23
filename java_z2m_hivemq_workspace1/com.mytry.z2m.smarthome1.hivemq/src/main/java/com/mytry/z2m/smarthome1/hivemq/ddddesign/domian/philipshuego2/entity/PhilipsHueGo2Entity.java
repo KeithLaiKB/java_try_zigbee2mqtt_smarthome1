@@ -7,9 +7,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivceEntity;
 
-public class PhilipsHueGo2Entity extends AbstractSmartDeivce{
+public class PhilipsHueGo2Entity extends AbstractSmartDeivceEntity{
 	
 
 	//MQTT publish: topic 'zigbee2mqtt/0x0017880109e5d363', payload '{"brightness":254,"color":{"hue":27,"saturation":92,"x":0.5046,"y":0.4152},"color_mode":"color_temp","color_temp":452,"color_temp_startup":452,"linkquality":207,"state":"ON","update":{"state":"idle"}}'

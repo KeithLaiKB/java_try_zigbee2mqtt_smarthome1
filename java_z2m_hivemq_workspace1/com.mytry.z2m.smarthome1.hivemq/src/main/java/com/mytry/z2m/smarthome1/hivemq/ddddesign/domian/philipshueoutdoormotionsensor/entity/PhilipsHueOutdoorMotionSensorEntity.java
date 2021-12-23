@@ -6,9 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivceEntity;
 
-public class PhilipsHueOutdoorMotionSensorEntity extends AbstractSmartDeivce {
+public class PhilipsHueOutdoorMotionSensorEntity extends AbstractSmartDeivceEntity {
 	private String 	motion_sensitivity = null;
 	private Boolean occupancy = null;
 

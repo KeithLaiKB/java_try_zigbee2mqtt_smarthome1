@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.sonoffs31lite.model;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.sonoffs31lite.entity;
 
 import java.util.LinkedHashMap;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivceEntity;
 
 /**
  * entity这种 anemic模型 会造成 贫血失忆症   --- martin fowler
@@ -19,14 +19,14 @@ import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivce;
  * @author laipl
  *
  */
-public class SonoffS31LiteDO extends AbstractSmartDeivce {
+public class SonoffS31LiteEntity extends AbstractSmartDeivceEntity {
 	private String 	state = null;
 	private Integer linkquality = null;
 	
-	public SonoffS31LiteDO() {
+	public SonoffS31LiteEntity() {
 		
 	}
-	public SonoffS31LiteDO(String state, Integer linkquality) {
+	public SonoffS31LiteEntity(String state, Integer linkquality) {
 		super();
 		this.state = state;
 		this.linkquality = linkquality;

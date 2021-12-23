@@ -41,20 +41,20 @@ import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.op.BrokerConnectionPo
  * @author laipl
  *
  */
-public class Sonoff31Lite_PhilipsHueGo2_Group1_Controller{
+public class SonoffS31Lite_PhilipsHueGo2_Group1_Controller{
 	
 
 
-	private static  volatile Sonoff31Lite_PhilipsHueGo2_Group1_Controller instance;
+	private static  volatile SonoffS31Lite_PhilipsHueGo2_Group1_Controller instance;
 	    
 
 	//Thread Safe Singleton
 	//ref: https://en.wikipedia.org/wiki/Double-checked_locking
-	public static Sonoff31Lite_PhilipsHueGo2_Group1_Controller getInstanceUsingDoubleCheckLocking(){
+	public static SonoffS31Lite_PhilipsHueGo2_Group1_Controller getInstanceUsingDoubleCheckLocking(){
 	    if(instance == null){
-	        synchronized (Sonoff31Lite_PhilipsHueGo2_Group1_Controller.class) {
+	        synchronized (SonoffS31Lite_PhilipsHueGo2_Group1_Controller.class) {
 	            if(instance == null){
-	                instance = new Sonoff31Lite_PhilipsHueGo2_Group1_Controller();
+	                instance = new SonoffS31Lite_PhilipsHueGo2_Group1_Controller();
 	            }
 	        }
 	    }

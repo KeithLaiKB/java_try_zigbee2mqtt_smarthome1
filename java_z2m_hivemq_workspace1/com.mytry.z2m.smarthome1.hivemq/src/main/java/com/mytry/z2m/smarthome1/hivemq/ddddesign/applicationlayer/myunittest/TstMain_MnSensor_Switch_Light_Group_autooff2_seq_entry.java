@@ -21,6 +21,9 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Call.Ex;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.philipshueoutdoormotionsensor.repository_gateway.IPhilipsHueOutdoorMotionSensorRepository;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.impl.PhilipsHueOutdoorMotionSensorRepository;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.mydo.PhilipsHueOutdoorMotionSensorDo;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueMotionOutdoorSensorEntity;
@@ -179,8 +182,6 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         //Mqtt5SubscribeAndCallbackBuilder.Start.Complete c1 = subscribeBuilder1.topicFilter(topic);
         // 点击最后一个 上面的Complete 就可以展开了
         com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Complete c1 = subscribeBuilder1.addSubscription().topicFilter(topicSensorSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
-        c1.addSubscription().topicFilter(topicSwitchSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
-        c1.addSubscription().topicFilter(topicLightSub1).qos(MqttQos.AT_LEAST_ONCE).applySubscription();
         
         //
         //
@@ -199,8 +200,20 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         		String jsonRsTmp = new String(publish.getPayloadAsBytes()); 		
         		
         		if(publish.getTopic().toString().equals(topicSensorSub1)==true) {
+        			IPhilipsHueOutdoorMotionSensorRepository iPhilipsHueOutdoorMotionSensorRepository1 = PhilipsHueOutdoorMotionSensorRepository.getInstanceUsingDoubleCheckLocking();
+        			PhilipsHueOutdoorMotionSensorDo philipsHueOutdoorMotionSensorDoTmp1 = new PhilipsHueOutdoorMotionSensorDo();
+        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+        	        
+        			philipsHueOutdoorMotionSensorDoTmp1.setAttributeFromJson(jsonRsTmp);
         			
-        			
+        			System.out.println("start add to my simulate database");
+        			// 存储到我虚拟的数据库里
+        			int resultAddTmp = iPhilipsHueOutdoorMotionSensorRepository1.myAdd(philipsHueOutdoorMotionSensorDoTmp1);
+        			if(resultAddTmp == 1){
+        				System.out.println("add to my simulate database successfully");
+        			}
         		}
         		// 如果当前 获得的信息是 开关信息
         		else if(publish.getTopic().toString().equals(topicSwitchSub1)==true) {

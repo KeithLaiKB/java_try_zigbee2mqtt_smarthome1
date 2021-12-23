@@ -6,9 +6,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivce;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivceDto;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.AbstractSmartDeivceEntity;
 
-public class PhilipsHueOutdoorMotionSensorDto extends AbstractSmartDeivce {
+public class PhilipsHueOutdoorMotionSensorDto extends AbstractSmartDeivceDto {
 	private String 	motion_sensitivity = null;
 	private Boolean occupancy = null;
 
@@ -87,7 +88,7 @@ public class PhilipsHueOutdoorMotionSensorDto extends AbstractSmartDeivce {
 	
 	@Override
 	public String toString() {
-		return "PhilipsHueMotionOutdoorSensorEntity [motion_sensitivity=" + motion_sensitivity + ", occupancy="
+		return "PhilipsHueOutdoorMotionSensorDto [motion_sensitivity=" + motion_sensitivity + ", occupancy="
 				+ occupancy + ", temperature=" + temperature + ", illuminance=" + illuminance + ", illuminance_lux="
 				+ illuminance_lux + ", led_indication=" + led_indication + ", occupancy_timeout=" + occupancy_timeout
 				+ ", battery=" + battery + ", linkquality=" + linkquality + "]";

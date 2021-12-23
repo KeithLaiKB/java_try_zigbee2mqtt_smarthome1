@@ -53,7 +53,7 @@ public class PhilipsHueOutdoorMotionSensorTable1 implements IPhilipsHueOutdoorMo
 		if(resultTmp==false) {
 			myResult = -1;
 		}
-		else if(resultTmp==false) {
+		else if(resultTmp==true) {
 			myResult = 1;
 		}
 		return myResult;

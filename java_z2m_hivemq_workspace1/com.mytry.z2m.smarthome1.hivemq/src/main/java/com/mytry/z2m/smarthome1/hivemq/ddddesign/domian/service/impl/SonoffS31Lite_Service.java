@@ -24,6 +24,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.philipshueoutdoormotionsensor.mydto.PhilipsHueOutdoorMotionSensorDto;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.service.ISonoff31Lite_PhilipsHueGo2_Group1_Service;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.service.ISonoffS31Lite_Service;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueMotionOutdoorSensorEntity;
@@ -46,29 +47,29 @@ import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.op.MyPublishTool;
  * @author laipl
  *
  */
-public class PhilipsHueOutdoorMotionSensor_Service implements ISonoff31Lite_PhilipsHueGo2_Group1_Service{
+public class SonoffS31Lite_Service implements ISonoffS31Lite_Service{
 	
 	String brokerIpAddress1 = "192.168.50.179";
 	int brokerPort1 = 1883;
 	String clientId1 = "IamClient1";
 
-	private static  volatile PhilipsHueOutdoorMotionSensor_Service instance;
+	private static  volatile SonoffS31Lite_Service instance;
 	    
 
 	//Thread Safe Singleton
 	//ref: https://en.wikipedia.org/wiki/Double-checked_locking
-	public static PhilipsHueOutdoorMotionSensor_Service getInstanceUsingDoubleCheckLocking(){
+	public static SonoffS31Lite_Service getInstanceUsingDoubleCheckLocking(){
 	    if(instance == null){
-	        synchronized (PhilipsHueOutdoorMotionSensor_Service.class) {
+	        synchronized (SonoffS31Lite_Service.class) {
 	            if(instance == null){
-	                instance = new PhilipsHueOutdoorMotionSensor_Service();
+	                instance = new SonoffS31Lite_Service();
 	            }
 	        }
 	    }
 	    return instance;
 	}
 
-	public int savePhilipsHueOutdoorMotionSensor(PhilipsHueOutdoorMotionSensorDto philipsHueOutdoorMotionSensor1) {
+	public int saveSonoffS31Lite(PhilipsHueOutdoorMotionSensorDto philipsHueOutdoorMotionSensor1) {
 		
 		return 1;
 	}
