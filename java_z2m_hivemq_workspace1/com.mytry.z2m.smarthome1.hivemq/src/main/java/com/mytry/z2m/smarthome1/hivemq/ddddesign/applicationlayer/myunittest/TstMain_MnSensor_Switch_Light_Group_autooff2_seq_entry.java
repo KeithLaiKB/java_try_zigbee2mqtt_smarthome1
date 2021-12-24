@@ -22,8 +22,9 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBu
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient.Mqtt5SubscribeAndCallbackBuilder.Call.Ex;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.philipshueoutdoormotionsensor.repository_gateway.IPhilipsHueOutdoorMotionSensorRepository;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.impl.PhilipsHueOutdoorMotionSensorRepository;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.impl.PhilipsHueOutdoorMotionSensorRepository;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.mydo.PhilipsHueOutdoorMotionSensorDo;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.posonoffs31lite.mydo.SonoffS31LiteDo;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.AbstractSmartDeivce;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueGo2Entity;
 import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.PhilipsHueMotionOutdoorSensorEntity;
@@ -82,23 +83,19 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
 	
 	public static void main(String[] args){
 
-
+		String ieeeAddressSensor1      	= "0x001788010644d258";
+		//
         String topicSensorSub1        	= "zigbee2mqtt/0x001788010644d258";
+        String topicSensorSub_get1      = "zigbee2mqtt/0x001788010644d258/get";
+        String topicSensorPub1        	= "zigbee2mqtt/0x001788010644d258/set";
+        
         String broker       			= "tcp://localhost:1883";
         
         String brokerIpAddress1       	= "192.168.50.179";
         
         String sensorClientId1     = "JavaSample_revcevierTesta";
         
-        // philips hue outdoor motion sensor
-        String topicSwitchSub1        = "zigbee2mqtt/0x00124b00250c256f";
-        
-        // phips hue go 2
-        String topicLightSub1        = "zigbee2mqtt/0x0017880109e5d363";
 
-        String switchClientId1     	= "JavaSample_revcevierTesta";
-        
-        int reqTimes = 0;
         
        
         //
@@ -187,10 +184,10 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         //
         //
         //
-        PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
-        plipMotionSensorEntity1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
-        plipMotionSensorEntity1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
-        plipMotionSensorEntity1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+        //PhilipsHueMotionOutdoorSensorEntity plipMotionSensorEntity1 = new PhilipsHueMotionOutdoorSensorEntity();
+        //plipMotionSensorEntity1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+        //plipMotionSensorEntity1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+        //plipMotionSensorEntity1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
         //
         // init
         
@@ -201,27 +198,37 @@ public class TstMain_MnSensor_Switch_Light_Group_autooff2_seq_entry {
         		
         		if(publish.getTopic().toString().equals(topicSensorSub1)==true) {
         			IPhilipsHueOutdoorMotionSensorRepository iPhilipsHueOutdoorMotionSensorRepository1 = PhilipsHueOutdoorMotionSensorRepository.getInstanceUsingDoubleCheckLocking();
-        			PhilipsHueOutdoorMotionSensorDo philipsHueOutdoorMotionSensorDoTmp1 = new PhilipsHueOutdoorMotionSensorDo();
-        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl("zigbee2mqtt/0x001788010644d258");
-        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
-        			philipsHueOutdoorMotionSensorDoTmp1.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
-        	        
-        			philipsHueOutdoorMotionSensorDoTmp1.setAttributeFromJson(jsonRsTmp);
+        			//
+        			//
+        			// 因为 暂时来说我的这个subscription 只关心我这个 ieeeAddressSensor1 为 "0x001788010644d258"
+        			PhilipsHueOutdoorMotionSensorDo philipsHueOutdoorMotionSensorDoTmp=iPhilipsHueOutdoorMotionSensorRepository1.myFindByIeeeAddress(ieeeAddressSensor1);
+            		//
+            		//
+            		int repoOpreationResultTmp = 0;
+            		if(philipsHueOutdoorMotionSensorDoTmp == null) {
+            			philipsHueOutdoorMotionSensorDoTmp = new PhilipsHueOutdoorMotionSensorDo();
+            			//
+            			philipsHueOutdoorMotionSensorDoTmp.setIeeeAddress("0x001788010644d258");
+            			//
+            			philipsHueOutdoorMotionSensorDoTmp.setTopicUrl("zigbee2mqtt/0x001788010644d258");
+            			philipsHueOutdoorMotionSensorDoTmp.setTopicUrl_get("zigbee2mqtt/0x001788010644d258/get");
+            			philipsHueOutdoorMotionSensorDoTmp.setTopicUrl_set("zigbee2mqtt/0x001788010644d258/set");
+            	        //
+            			//
+            			//
+            			philipsHueOutdoorMotionSensorDoTmp.setAttributeFromJson(jsonRsTmp);
+            			//
+            			repoOpreationResultTmp = iPhilipsHueOutdoorMotionSensorRepository1.myAdd(philipsHueOutdoorMotionSensorDoTmp);
+            			if(repoOpreationResultTmp == 1) {
+            				System.out.println("myAdd successfully");
+            			}
+            		}
+            		else if(philipsHueOutdoorMotionSensorDoTmp != null) {
+            			philipsHueOutdoorMotionSensorDoTmp.setAttributeFromJson(jsonRsTmp);
+            			repoOpreationResultTmp = iPhilipsHueOutdoorMotionSensorRepository1.myUpdate(philipsHueOutdoorMotionSensorDoTmp);
+            			System.out.println("myUpdate successfully");
+            		}
         			
-        			System.out.println("start add to my simulate database");
-        			// 存储到我虚拟的数据库里
-        			int resultAddTmp = iPhilipsHueOutdoorMotionSensorRepository1.myAdd(philipsHueOutdoorMotionSensorDoTmp1);
-        			if(resultAddTmp == 1){
-        				System.out.println("add to my simulate database successfully");
-        			}
-        		}
-        		// 如果当前 获得的信息是 开关信息
-        		else if(publish.getTopic().toString().equals(topicSwitchSub1)==true) {
-        			
-        		}
-        		// 如果当前 获得的信息是 开关信息
-        		else if(publish.getTopic().toString().equals(topicLightSub1)==true) {
-
         		}
         		
         		

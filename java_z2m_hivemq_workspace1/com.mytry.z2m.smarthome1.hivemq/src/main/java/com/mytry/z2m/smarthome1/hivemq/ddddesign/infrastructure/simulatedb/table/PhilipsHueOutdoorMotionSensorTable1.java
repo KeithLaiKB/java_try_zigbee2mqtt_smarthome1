@@ -3,7 +3,6 @@ package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.tabl
 import java.util.ArrayList;
 
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.mydo.PhilipsHueOutdoorMotionSensorDo;
-import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.DeviceSimulateDatabase;
 
 
 /**
@@ -27,6 +26,14 @@ public class PhilipsHueOutdoorMotionSensorTable1 implements IPhilipsHueOutdoorMo
 	
 	private static volatile PhilipsHueOutdoorMotionSensorTable1 instance;
     
+	
+	
+	private PhilipsHueOutdoorMotionSensorTable1() {
+		
+	}
+	
+	
+	
 
 	//Thread Safe Singleton
 	//ref: https://en.wikipedia.org/wiki/Double-checked_locking

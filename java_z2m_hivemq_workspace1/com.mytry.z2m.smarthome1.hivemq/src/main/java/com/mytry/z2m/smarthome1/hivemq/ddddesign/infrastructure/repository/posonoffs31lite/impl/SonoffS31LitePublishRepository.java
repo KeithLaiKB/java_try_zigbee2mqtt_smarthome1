@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.impl;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.posonoffs31lite.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,15 +8,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.db.MyPublishTool;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.mydo.PhilipsHueOutdoorMotionSensorDo;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.posonoffs31lite.mydo.SonoffS31LiteDo;
 
 
 
 
 
-public class PhilipsHueOutdoorMotionSensorPublishRepository {
+public class SonoffS31LitePublishRepository {
 	// String id
 	//String Uuid = null;
-	ArrayList<PhilipsHueOutdoorMotionSensorDo> myElements = new ArrayList<PhilipsHueOutdoorMotionSensorDo>();
+	ArrayList<SonoffS31LiteDo> myElements = new ArrayList<SonoffS31LiteDo>();
 	
 	
 	// "zigbee2mqtt/0x00124b00250c256f/set"

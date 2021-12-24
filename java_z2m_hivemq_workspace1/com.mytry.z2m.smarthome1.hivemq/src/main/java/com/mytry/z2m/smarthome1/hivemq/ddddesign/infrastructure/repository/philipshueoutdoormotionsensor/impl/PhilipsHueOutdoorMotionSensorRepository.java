@@ -1,4 +1,4 @@
-package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.impl;
+package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.philipshueoutdoormotionsensor.impl;
 
 import java.util.ArrayList;
 
@@ -37,7 +37,7 @@ public class PhilipsHueOutdoorMotionSensorRepository implements IPhilipsHueOutdo
 		
 		// ------------------------- 下面的 部分应该是 在服务器中的数据 库中该做的事情, 只是我们 把服务器中的数据库 模拟了出来---------------------------
 		// 获取数据库的表接口
-		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getiPhilipsHueOutdoorMotionSensorTable1();
+		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getIPhilipsHueOutdoorMotionSensorTable1();
 		// 去查询
 		int myResult= iPhilipsHueOutdoorMotionSensorTable1.myAdd(mydo1);
 
@@ -50,7 +50,7 @@ public class PhilipsHueOutdoorMotionSensorRepository implements IPhilipsHueOutdo
 		
 		// ------------------------- 下面的 部分应该是 在服务器中的数据 库中该做的事情, 只是我们 把服务器中的数据库 模拟了出来---------------------------
 		// 获取数据库的表接口
-		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getiPhilipsHueOutdoorMotionSensorTable1();
+		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getIPhilipsHueOutdoorMotionSensorTable1();
 		// 去查询
 		int myResult= iPhilipsHueOutdoorMotionSensorTable1.myUpdate(mydo1);
 
@@ -63,7 +63,7 @@ public class PhilipsHueOutdoorMotionSensorRepository implements IPhilipsHueOutdo
 		
 		// ------------------------- 下面的 部分应该是 在服务器中的数据 库中该做的事情, 只是我们 把服务器中的数据库 模拟了出来---------------------------
 		// 获取数据库的表接口
-		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getiPhilipsHueOutdoorMotionSensorTable1();
+		IPhilipsHueOutdoorMotionSensorTable1 iPhilipsHueOutdoorMotionSensorTable1 = deviceSimulateDatabase1.getIPhilipsHueOutdoorMotionSensorTable1();
 		// 去查询
 		PhilipsHueOutdoorMotionSensorDo myDo1= iPhilipsHueOutdoorMotionSensorTable1.myFindByIeeeAddress(ieeeAddress);
 

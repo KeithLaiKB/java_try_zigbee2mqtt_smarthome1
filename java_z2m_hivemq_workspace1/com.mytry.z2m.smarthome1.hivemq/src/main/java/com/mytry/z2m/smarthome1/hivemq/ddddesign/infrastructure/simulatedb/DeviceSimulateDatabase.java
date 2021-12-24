@@ -1,7 +1,9 @@
 package com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb;
 
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.table.IPhilipsHueOutdoorMotionSensorTable1;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.table.ISonoffS31LiteTable1;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.table.PhilipsHueOutdoorMotionSensorTable1;
+import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.simulatedb.table.SonoffS31LiteTable1;
 
 /**
  * 因为 Iot的 mqtt 是一个 发布中 和 订阅者的模式, 我们可以一直打开订阅, 每次 mqtt 发送来的 消息,
@@ -62,12 +64,15 @@ public class DeviceSimulateDatabase {
 	
 	
 	
-	public IPhilipsHueOutdoorMotionSensorTable1 getiPhilipsHueOutdoorMotionSensorTable1() {
+	public IPhilipsHueOutdoorMotionSensorTable1 getIPhilipsHueOutdoorMotionSensorTable1() {
 		IPhilipsHueOutdoorMotionSensorTable1 myResult = PhilipsHueOutdoorMotionSensorTable1.getInstanceUsingDoubleCheckLocking();
 		return myResult;
 	}
 
-	
+	public ISonoffS31LiteTable1 getISonoffS31LiteTable1() {
+		ISonoffS31LiteTable1 myResult = SonoffS31LiteTable1.getInstanceUsingDoubleCheckLocking();
+		return myResult;
+	}
 	
 	
 	
