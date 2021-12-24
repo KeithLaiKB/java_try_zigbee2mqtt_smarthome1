@@ -11,10 +11,6 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.domian.sonoffs31lite.repository_gateway.ISonoffS31LiteRepository;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.posonoffs31lite.impl.SonoffS31LiteRepository;
 import com.mytry.z2m.smarthome1.hivemq.ddddesign.infrastructure.repository.posonoffs31lite.mydo.SonoffS31LiteDo;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.entity.SonoffS31LiteEntity;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Light_Philips_Hue_GO2_Tool;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tool.Switcher_Sonoff31Lite_Tool;
-import com.mytry.z2m.smarthome1.hivemq.myorigindesign.tryautooff.onegroup_service.TstMain_MnSensor_Switch_Light_Group_Request;
 
 public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
 	private String ieeeAddress = null;
@@ -24,11 +20,11 @@ public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
 	
 	
 	
-	String brokerIpAddress1 = null;
-	int brokerPort1 = -1;
-	String clientId1 = null;
+	private String brokerIpAddress1 = null;
+	private int brokerPort1 = -1;
+	private String clientId1 = null;
 	//
-	// 当 myThreadRunflag 设置成不是0 时, run方法将会结束 
+	// 当 myThreadRunflag 设置成不是1 时, run方法将会结束 
 	int myThreadRunflag = 0;
 	
 	public SonoffS31LiteSubscriber_ForKeepRunning() {
@@ -158,6 +154,7 @@ public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
     		if(sonoffS31LiteDoTmp == null) {
     			sonoffS31LiteDoTmp = new SonoffS31LiteDo();
     			//
+    			sonoffS31LiteDoTmp.setIeeeAddress("0x00124b00250c256f");
     			sonoffS31LiteDoTmp.setTopicUrl("zigbee2mqtt/0x00124b00250c256f");
     			sonoffS31LiteDoTmp.setTopicUrl_get("zigbee2mqtt/0x00124b00250c256f/get");
     			sonoffS31LiteDoTmp.setTopicUrl_set("zigbee2mqtt/0x00124b00250c256f/set");
@@ -166,13 +163,13 @@ public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
     			//
     			repoOpreationResultTmp = iSonoffS31LiteRepository1.myAdd(sonoffS31LiteDoTmp);
     			if(repoOpreationResultTmp == 1) {
-    				System.out.println("myAdd successfully");
+    				System.out.println("myAdd sonoffS31Lite switcher successfully");
     			}
     		}
     		else if(sonoffS31LiteDoTmp != null) {
     			sonoffS31LiteDoTmp.setAttributeFromJson(jsonRsTmp);
     			repoOpreationResultTmp = iSonoffS31LiteRepository1.myUpdate(sonoffS31LiteDoTmp);
-    			System.out.println("myUpdate successfully");
+    			System.out.println("myUpdate sonoffS31Lite switcher successfully");
     		}
     		//
     	}); 	// set callback
@@ -181,7 +178,7 @@ public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
         //
         //
         // 为了保持这个线程一直活着
-		while (myThreadRunflag == 0) {
+		while (myThreadRunflag == 1) {
 			// 减少循环的次数
         	try {
         		Thread.sleep(1000);
@@ -203,6 +200,7 @@ public class SonoffS31LiteSubscriber_ForKeepRunning implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	System.out.println("SonoffS31LiteSubscriber_ForKeepRunning disconnect");
 	}
 
 
