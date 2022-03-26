@@ -14,6 +14,8 @@ create a thread all time running to receive the notification(status) of IoT devi
 create a thread one time running to get the status of the IoT device from the database
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_readMessage_Main_3.jpg)
 
-intergration of publish message t
+intergration of publish_get message and save the IoT device status into database
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_publishget_and_subscribe_ObjectDiagram1_4.jpg)
+
+intergration get the IoT device status from database and update the status and send to the broker
 ![image](https://github.com/KeithLaiKB/java_try_zigbee2mqtt_smarthome1/blob/main/doc/ddd_doc/Model_readAndPublish_ObjectDiagram1_5.jpg)
